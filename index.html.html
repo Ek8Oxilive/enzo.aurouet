@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Portfolio one-page cyberpunk d'Enzo Aurouet, étudiant en Réseaux & Télécommunications." />
-  <title>Enzo Aurouet | Portfolio Cyber</title>
+  <meta name="description" content="Portfolio d'Enzo Aurouet, étudiant en BUT2 Réseaux & Télécommunications parcours Cybersécurité de la Rochelle" />
+  <title>Enzo Aurouet | Portfolio</title>
   <style>
     :root {
       --bg: #04050a;
@@ -844,6 +844,102 @@
       box-shadow: inset 0 0 12px rgba(88, 243, 255, 0.06), 0 0 18px rgba(88, 243, 255, 0.09);
     }
 
+
+    .certifications-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .cert-card {
+      position: relative;
+      padding: 1.4rem;
+      min-height: 100%;
+      display: grid;
+      gap: 0.9rem;
+      border: 1px solid rgba(88, 243, 255, 0.16);
+      background: linear-gradient(180deg, rgba(8, 14, 28, 0.72), rgba(7, 12, 24, 0.82));
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03), 0 18px 55px rgba(0, 0, 0, 0.28);
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    .cert-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(88, 243, 255, 0.32), rgba(255, 87, 210, 0.2), rgba(98, 255, 179, 0.28));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .cert-card:hover {
+      transform: translateY(-10px);
+      border-color: rgba(88, 243, 255, 0.42);
+      box-shadow: var(--shadow-cyan), 0 22px 34px rgba(0, 0, 0, 0.24);
+      background: linear-gradient(180deg, rgba(9, 20, 38, 0.84), rgba(5, 12, 24, 0.92));
+    }
+
+    .cert-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 130px;
+      width: fit-content;
+      height: 40px;
+      padding: 0 1rem;
+      box-sizing: border-box;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      line-height: 1;
+      white-space: nowrap;
+      color: var(--green);
+      background: rgba(98, 255, 179, 0.08);
+      border: 1px solid rgba(98, 255, 179, 0.18);
+    }
+
+    .cert-card h3 {
+      font-size: 1.12rem;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    .cert-card p {
+      color: var(--muted);
+      line-height: 1.75;
+      font-size: 0.95rem;
+    }
+
+    .cert-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      min-height: 44px;
+      padding: 0.8rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(88, 243, 255, 0.18);
+      background: rgba(88, 243, 255, 0.08);
+      color: var(--cyan);
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+
+    .cert-link:hover {
+      transform: translateY(-2px);
+      color: var(--text);
+      border-color: rgba(88, 243, 255, 0.34);
+      box-shadow: inset 0 0 12px rgba(88, 243, 255, 0.06), 0 0 18px rgba(88, 243, 255, 0.09);
+    }
+
     .contact-layout {
       display: grid;
       grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
@@ -1028,7 +1124,8 @@
       .hero-layout,
       .about-grid,
       .contact-layout,
-      .projects-grid {
+      .projects-grid,
+      .certifications-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1164,6 +1261,7 @@
           <li><a href="#accueil" class="active">Accueil</a></li>
           <li><a href="#a-propos">À Propos</a></li>
           <li><a href="#projets">Projets</a></li>
+          <li><a href="#certifications">Certifications</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
@@ -1411,6 +1509,50 @@
       </div>
     </section>
 
+
+    <section class="section" id="certifications" aria-labelledby="certifications-title">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="kicker">Certifications</span>
+          <h2 id="certifications-title" class="typewriter-pending" data-typewriter="Certifications">Certifications</h2>
+          <p>Une sélection de badges et certifications obtenus dans les domaines des réseaux, de l’administration système et de la cybersécurité.</p>
+        </div>
+
+        <div class="certifications-grid">
+          <article class="cert-card reveal">
+            <span class="cert-badge">Open Badge Factory</span>
+            <h3>CybeR&amp;T - Pentest</h3>
+            <p>Certification orientée méthodologie de pentest, énumération, exploitation contrôlée et rédaction d’un rapport d’audit.</p>
+            <a class="cert-link" href="https://openbadgefactory.com/obv3/credentials/76503088bfb8fa46145d89e19f3b1f2847f2140b" target="_blank" rel="noopener noreferrer">Voir la certification</a>
+          </article>
+          <article class="cert-card reveal">
+            <span class="cert-badge">Credly</span>
+            <h3>CCNA: Switching, Routing, and Wireless Essentials</h3>
+            <p>Certification Cisco centrée sur la commutation, le routage, le Wi-Fi et les fondamentaux d’administration réseau.</p>
+            <a class="cert-link" href="https://www.credly.com/badges/e50d2906-0dc6-43fa-bf11-d90e70b71e49/linked_in_profile" target="_blank" rel="noopener noreferrer">Voir la certification</a>
+          </article>
+          <article class="cert-card reveal">
+            <span class="cert-badge">Open Badge Factory</span>
+            <h3>CybeR&amp;T - LAN et Services</h3>
+            <p>Certification liée à l’administration LAN, aux services réseau et à la mise en œuvre d’infrastructures fonctionnelles et sécurisées.</p>
+            <a class="cert-link" href="https://openbadgefactory.com/v1/assertion/50b443a4093c3d40a37e42727e1732e36c11e8a9.html" target="_blank" rel="noopener noreferrer">Voir la certification</a>
+          </article>
+          <article class="cert-card reveal">
+            <span class="cert-badge">Open Badge Factory</span>
+            <h3>CybeR&amp;T - Hygiène Informatique</h3>
+            <p>Certification dédiée aux bonnes pratiques de cybersécurité, à la prévention des risques et à l’hygiène numérique.</p>
+            <a class="cert-link" href="https://openbadgefactory.com/v1/assertion/ec246450990bca17276c92f6a6577a55ee52dedb.html" target="_blank" rel="noopener noreferrer">Voir la certification</a>
+          </article>
+          <article class="cert-card reveal">
+            <span class="cert-badge">Credly</span>
+            <h3>CCNA: Introduction to Networks</h3>
+            <p>Certification Cisco sur les bases des réseaux, l’adressage IP, les protocoles et les équipements de communication.</p>
+            <a class="cert-link" href="https://www.credly.com/badges/bbcff22b-e397-4e2a-aa10-abc2d80c1a7f/linked_in_profile" target="_blank" rel="noopener noreferrer">Voir la certification</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="contact" aria-labelledby="contact-title">
       <div class="container">
         <div class="section-heading reveal">
@@ -1432,7 +1574,7 @@
               </div>
               <div class="contact-block">
                 <span>Navigation</span>
-                <p><a href="#accueil">Accueil</a>, <a href="#a-propos">À Propos</a>, <a href="#projets">Projets</a>, <a href="#contact">Contact</a></p>
+                <p><a href="#accueil">Accueil</a>, <a href="#a-propos">À Propos</a>, <a href="#projets">Projets</a>, <a href="#certifications">Certifications</a>, <a href="#contact">Contact</a></p>
               </div>
             </div>
           </aside>
