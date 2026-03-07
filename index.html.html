@@ -940,6 +940,89 @@
       box-shadow: inset 0 0 12px rgba(88, 243, 255, 0.06), 0 0 18px rgba(88, 243, 255, 0.09);
     }
 
+
+    .info-grid,
+    .formation-grid,
+    .cv-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .wide-card {
+      padding: 1.5rem;
+    }
+
+    .wide-card h3 {
+      color: var(--cyan);
+      font-size: 1.08rem;
+      margin-bottom: 0.9rem;
+      text-shadow: 0 0 12px rgba(88, 243, 255, 0.18);
+    }
+
+    .wide-card p {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+
+    .wide-card .tags {
+      margin-top: 1rem;
+    }
+
+    .timeline-card {
+      padding: 1.5rem;
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .timeline-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 140px;
+      width: fit-content;
+      height: 40px;
+      padding: 0 1rem;
+      box-sizing: border-box;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      line-height: 1;
+      white-space: nowrap;
+      color: var(--green);
+      background: rgba(98, 255, 179, 0.08);
+      border: 1px solid rgba(98, 255, 179, 0.18);
+    }
+
+    .timeline-card h3 {
+      font-size: 1.18rem;
+      line-height: 1.35;
+      color: var(--text);
+    }
+
+    .timeline-meta {
+      color: var(--cyan);
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    .cv-card {
+      padding: 1.6rem;
+      text-align: center;
+      display: grid;
+      gap: 1rem;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .cv-card p {
+      max-width: 56ch;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
     .contact-layout {
       display: grid;
       grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
@@ -1125,7 +1208,10 @@
       .about-grid,
       .contact-layout,
       .projects-grid,
-      .certifications-grid {
+      .certifications-grid,
+      .info-grid,
+      .formation-grid,
+      .cv-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1260,8 +1346,13 @@
         <ul class="nav-links" id="nav-links">
           <li><a href="#accueil" class="active">Accueil</a></li>
           <li><a href="#a-propos">À Propos</a></li>
+          <li><a href="#competences">Compétences</a></li>
+          <li><a href="#outils">Outils</a></li>
           <li><a href="#projets">Projets</a></li>
+          <li><a href="#experiences">Expériences</a></li>
+          <li><a href="#formation">Formation</a></li>
           <li><a href="#certifications">Certifications</a></li>
+          <li><a href="#cv">CV</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
@@ -1363,6 +1454,109 @@
         </div>
       </div>
     </section>
+
+    <section class="section" id="competences" aria-labelledby="competences-title">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="kicker">Compétences techniques</span>
+          <h2 id="competences-title" class="typewriter-pending" data-typewriter="Compétences">Compétences</h2>
+          <p>Un socle technique construit autour des réseaux, de la cybersécurité, des systèmes et du développement.</p>
+        </div>
+
+        <div class="info-grid">
+          <article class="glass-card wide-card cyber-corners reveal from-left">
+            <h3>Compétences réseau</h3>
+            <ul class="tags" aria-label="Compétences réseau">
+              <li>VLAN</li>
+              <li>MPLS</li>
+              <li>OSPF</li>
+              <li>STP</li>
+              <li>HSRP</li>
+              <li>DHCP</li>
+              <li>DNS</li>
+              <li>VPN</li>
+            </ul>
+          </article>
+
+          <article class="glass-card wide-card cyber-corners reveal from-right">
+            <h3>Cybersécurité</h3>
+            <ul class="tags" aria-label="Compétences cybersécurité">
+              <li>Pentest</li>
+              <li>Nmap</li>
+              <li>Metasploit</li>
+              <li>Snort</li>
+              <li>Wireshark</li>
+              <li>IDS / IPS</li>
+              <li>Hardening</li>
+            </ul>
+          </article>
+
+          <article class="glass-card wide-card cyber-corners reveal from-left">
+            <h3>Systèmes</h3>
+            <ul class="tags" aria-label="Compétences systèmes">
+              <li>Linux</li>
+              <li>Windows Server</li>
+              <li>Active Directory</li>
+              <li>VirtualBox</li>
+              <li>Docker</li>
+            </ul>
+          </article>
+
+          <article class="glass-card wide-card cyber-corners reveal from-right">
+            <h3>Programmation</h3>
+            <ul class="tags" aria-label="Compétences programmation">
+              <li>Python</li>
+              <li>Bash</li>
+              <li>SQL</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="outils" aria-labelledby="outils-title">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="kicker">Outils maîtrisés</span>
+          <h2 id="outils-title" class="typewriter-pending" data-typewriter="Outils maîtrisés">Outils maîtrisés</h2>
+          <p>Les principaux environnements et logiciels utilisés dans mes projets académiques et techniques.</p>
+        </div>
+
+        <div class="info-grid">
+          <article class="glass-card wide-card cyber-corners reveal from-left">
+            <h3>Réseau</h3>
+            <ul class="tags" aria-label="Outils réseau">
+              <li>Cisco Packet Tracer</li>
+              <li>GNS3</li>
+              <li>Wireshark</li>
+            </ul>
+          </article>
+
+          <article class="glass-card wide-card cyber-corners reveal from-right">
+            <h3>Cybersécurité</h3>
+            <ul class="tags" aria-label="Outils cybersécurité">
+              <li>Kali Linux</li>
+              <li>Metasploit</li>
+              <li>Hydra</li>
+              <li>Burp Suite</li>
+              <li>Gobuster</li>
+              <li>ffuf</li>
+            </ul>
+          </article>
+
+          <article class="glass-card wide-card cyber-corners reveal from-left">
+            <h3>Systèmes</h3>
+            <ul class="tags" aria-label="Outils systèmes">
+              <li>VirtualBox</li>
+              <li>VMware</li>
+              <li>Apache</li>
+              <li>MariaDB</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
 
     <section class="section" id="projets" aria-labelledby="projects-title">
       <div class="container">
@@ -1510,6 +1704,76 @@
     </section>
 
 
+    <section class="section" id="experiences" aria-labelledby="experiences-title">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="kicker">Expériences / Projets personnels</span>
+          <h2 id="experiences-title" class="typewriter-pending" data-typewriter="Expériences">Expériences</h2>
+          <p>Des environnements personnels et pratiques pour approfondir mes compétences hors des SAE.</p>
+        </div>
+
+        <div class="info-grid">
+          <article class="glass-card wide-card cyber-corners reveal from-left">
+            <h3>Home Lab réseau</h3>
+            <p>Simulation de réseaux multi-sites, mise en place de routage dynamique et déploiement de solutions VPN pour tester des architectures proches du contexte professionnel.</p>
+            <ul class="tags" aria-label="Home Lab réseau">
+              <li>Multi-sites</li>
+              <li>Routage dynamique</li>
+              <li>VPN</li>
+            </ul>
+          </article>
+
+          <article class="glass-card wide-card cyber-corners reveal from-right">
+            <h3>Lab cybersécurité</h3>
+            <p>Entraînement sur des machines vulnérables, pratique du pentest sur Hack The Box et analyse de trafic pour renforcer mes réflexes en cybersécurité offensive et défensive.</p>
+            <ul class="tags" aria-label="Lab cybersécurité">
+              <li>Hack The Box</li>
+              <li>Pentest</li>
+              <li>Analyse de trafic</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="formation" aria-labelledby="formation-title">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="kicker">Formation</span>
+          <h2 id="formation-title" class="typewriter-pending" data-typewriter="Formation">Formation</h2>
+          <p>Mon parcours académique actuel dans le domaine des réseaux, des systèmes et de la cybersécurité.</p>
+        </div>
+
+        <div class="formation-grid">
+          <article class="glass-card timeline-card cyber-corners reveal">
+            <span class="timeline-badge">2023 - 2026</span>
+            <h3>BUT Réseaux &amp; Télécommunications</h3>
+            <p class="timeline-meta">Parcours Cybersécurité</p>
+            <p>IUT de La Rochelle</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cv" aria-labelledby="cv-title">
+      <div class="container">
+        <div class="section-heading reveal">
+          <span class="kicker">CV</span>
+          <h2 id="cv-title" class="typewriter-pending" data-typewriter="CV">CV</h2>
+          <p>Un accès rapide à mon CV pour faciliter la lecture de mon parcours par les recruteurs.</p>
+        </div>
+
+        <div class="cv-grid">
+          <article class="glass-card cv-card cyber-corners reveal">
+            <h3>Télécharger mon CV</h3>
+            <p>Ajoute ici ton fichier PDF final pour permettre aux recruteurs de télécharger directement ton CV depuis ton portfolio.</p>
+            <a class="btn btn-primary" href="Enzo_Aurouet_CV.pdf" title="Ajoute ici le lien vers ton CV PDF">Télécharger mon CV (PDF)</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
     <section class="section" id="certifications" aria-labelledby="certifications-title">
       <div class="container">
         <div class="section-heading reveal">
@@ -1574,7 +1838,7 @@
               </div>
               <div class="contact-block">
                 <span>Navigation</span>
-                <p><a href="#accueil">Accueil</a>, <a href="#a-propos">À Propos</a>, <a href="#projets">Projets</a>, <a href="#certifications">Certifications</a>, <a href="#contact">Contact</a></p>
+                <p><a href="#accueil">Accueil</a>, <a href="#a-propos">À Propos</a>, <a href="#competences">Compétences</a>, <a href="#outils">Outils</a>, <a href="#projets">Projets</a>, <a href="#experiences">Expériences</a>, <a href="#formation">Formation</a>, <a href="#certifications">Certifications</a>, <a href="#cv">CV</a>, <a href="#contact">Contact</a></p>
               </div>
             </div>
           </aside>
