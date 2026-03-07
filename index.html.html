@@ -196,22 +196,22 @@
     }
 
     .nav-wrap {
-      width: min(var(--max), calc(100% - 2rem));
+      width: min(1440px, calc(100% - 2rem));
       height: 100%;
       margin: 0 auto;
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr;
       align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
+      gap: 1.25rem;
     }
 
     .logo {
       display: inline-flex;
       align-items: center;
-      gap: 0.8rem;
+      gap: 0.65rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.24em;
+      letter-spacing: 0.18em;
       color: var(--cyan);
       text-shadow: 0 0 12px rgba(88, 243, 255, 0.42);
       white-space: nowrap;
@@ -242,8 +242,11 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: center;
+      gap: 0.35rem;
       list-style: none;
+      flex-wrap: nowrap;
+      white-space: nowrap;
     }
 
     .nav-links a {
@@ -284,6 +287,21 @@
     .nav-links a:hover::before,
     .nav-links a.active::before {
       opacity: 1;
+    }
+
+
+    @media (min-width: 861px) {
+      nav[aria-label="Navigation principale"] {
+        display: flex;
+        justify-content: center;
+        min-width: 0;
+      }
+
+      .nav-links a {
+        min-height: 38px;
+        padding: 0.55rem 0.62rem;
+        font-size: 0.81rem;
+      }
     }
 
     .nav-toggle {
@@ -1226,7 +1244,22 @@
       }
     }
 
+
     @media (max-width: 860px) {
+      .nav-wrap {
+        grid-template-columns: 1fr auto;
+      }
+
+      nav[aria-label="Navigation principale"] {
+        justify-self: end;
+      }
+
+      .nav-links {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+        white-space: normal;
+      }
+
       .nav-toggle {
         display: inline-flex;
       }
@@ -1351,8 +1384,8 @@
           <li><a href="#projets">Projets</a></li>
           <li><a href="#experiences">Expériences</a></li>
           <li><a href="#formation">Formation</a></li>
-          <li><a href="#certifications">Certifications</a></li>
           <li><a href="#cv">CV</a></li>
+          <li><a href="#certifications">Certifications</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
@@ -1837,7 +1870,7 @@
               </div>
               <div class="contact-block">
                 <span>Navigation</span>
-                <p><a href="#accueil">Accueil</a>, <a href="#a-propos">À Propos</a>, <a href="#competences">Compétences</a>, <a href="#outils">Outils</a>, <a href="#projets">Projets</a>, <a href="#experiences">Expériences</a>, <a href="#formation">Formation</a>, <a href="#certifications">Certifications</a>, <a href="#cv">CV</a>, <a href="#contact">Contact</a></p>
+                <p><a href="#accueil">Accueil</a>, <a href="#a-propos">À Propos</a>, <a href="#competences">Compétences</a>, <a href="#outils">Outils</a>, <a href="#projets">Projets</a>, <a href="#experiences">Expériences</a>, <a href="#formation">Formation</a>, <a href="#cv">CV</a>, <a href="#certifications">Certifications</a>, <a href="#contact">Contact</a></p>
               </div>
             </div>
           </aside>
@@ -1977,22 +2010,28 @@
         headingObserver.observe(heading);
       });
 
-      const sectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          const id = entry.target.getAttribute('id');
-          const link = document.querySelector(`.nav-links a[href="#${id}"]`);
-          if (!link) return;
-          if (entry.isIntersecting) {
-            navAnchors.forEach((a) => a.classList.remove('active'));
-            link.classList.add('active');
+      function updateActiveNav() {
+        const headerOffset = 110;
+        const scrollPosition = window.scrollY + headerOffset;
+
+        let currentSection = sections[0];
+
+        sections.forEach((section) => {
+          if (section.offsetTop <= scrollPosition) {
+            currentSection = section;
           }
         });
-      }, {
-        threshold: 0.55,
-        rootMargin: '-15% 0px -35% 0px'
-      });
 
-      sections.forEach((section) => sectionObserver.observe(section));
+        const currentId = currentSection?.getAttribute('id');
+        navAnchors.forEach((a) => {
+          const isActive = a.getAttribute('href') === `#${currentId}`;
+          a.classList.toggle('active', isActive);
+        });
+      }
+
+      updateActiveNav();
+      window.addEventListener('scroll', updateActiveNav, { passive: true });
+      window.addEventListener('resize', updateActiveNav);
 
       function updateProgress() {
         const scrollable = document.documentElement.scrollHeight - window.innerHeight;
