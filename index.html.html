@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Portfolio d'Enzo Aurouet, étudiant en BUT2 Réseaux & Télécommunications parcours Cybersécurité de la Rochelle" />
+  <meta name="description" content="Portfolio d'Enzo Aurouet, étudiant en BUT2 Réseaux & Télécommunications parcours Cybersécurité à La Rochelle" />
   <title>Enzo Aurouet | Portfolio</title>
 
   <meta name="theme-color" content="#07111f" />
@@ -21,6 +21,7 @@
       --green: #62ffb3;
       --magenta: #ff57d2;
       --danger: #ff5f7a;
+      --yellow: #ffd15d;
       --shadow-cyan: 0 0 8px rgba(88, 243, 255, 0.5), 0 0 28px rgba(88, 243, 255, 0.16);
       --shadow-green: 0 0 8px rgba(98, 255, 179, 0.45), 0 0 28px rgba(98, 255, 179, 0.16);
       --shadow-magenta: 0 0 8px rgba(255, 87, 210, 0.45), 0 0 28px rgba(255, 87, 210, 0.14);
@@ -95,6 +96,60 @@
     canvas {
       display: block;
       max-width: 100%;
+    }
+
+    /* ===== HIGHLIGHT STYLES ===== */
+    .hl {
+      color: var(--text);
+      font-weight: 700;
+    }
+    .hl-cyan {
+      color: var(--cyan);
+      font-weight: 700;
+      text-shadow: 0 0 12px rgba(88, 243, 255, 0.3);
+    }
+    .hl-green {
+      color: var(--green);
+      font-weight: 700;
+      text-shadow: 0 0 12px rgba(98, 255, 179, 0.3);
+    }
+    .hl-magenta {
+      color: var(--magenta);
+      font-weight: 700;
+      text-shadow: 0 0 12px rgba(255, 87, 210, 0.3);
+    }
+    .hl-yellow {
+      color: var(--yellow);
+      font-weight: 700;
+      text-shadow: 0 0 12px rgba(255, 209, 93, 0.3);
+    }
+    .hl-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: inherit;
+      line-height: inherit;
+    }
+    .hl-badge--green {
+      color: var(--green);
+      background: rgba(98, 255, 179, 0.10);
+      border: 1px solid rgba(98, 255, 179, 0.25);
+      box-shadow: 0 0 12px rgba(98, 255, 179, 0.15);
+    }
+    .hl-badge--cyan {
+      color: var(--cyan);
+      background: rgba(88, 243, 255, 0.10);
+      border: 1px solid rgba(88, 243, 255, 0.25);
+      box-shadow: 0 0 12px rgba(88, 243, 255, 0.15);
+    }
+    .hl-badge--magenta {
+      color: var(--magenta);
+      background: rgba(255, 87, 210, 0.10);
+      border: 1px solid rgba(255, 87, 210, 0.25);
+      box-shadow: 0 0 12px rgba(255, 87, 210, 0.15);
     }
 
     canvas#network {
@@ -500,6 +555,12 @@
       border-radius: 50%;
       background: currentColor;
       box-shadow: 0 0 12px currentColor;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
     }
 
     .hero h1 {
@@ -713,6 +774,13 @@
       border: 1px solid rgba(88, 243, 255, 0.15);
       background: rgba(88, 243, 255, 0.06);
       color: var(--text);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .terminal-chip:hover {
+      border-color: rgba(88, 243, 255, 0.3);
+      box-shadow: 0 0 16px rgba(88, 243, 255, 0.12);
+      transform: translateY(-2px);
     }
 
     .terminal-chip small {
@@ -1089,6 +1157,12 @@
       border-radius: 16px;
       border: 1px solid rgba(88, 243, 255, 0.14);
       background: rgba(88, 243, 255, 0.06);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .contact-block:hover {
+      border-color: rgba(88, 243, 255, 0.28);
+      box-shadow: 0 0 16px rgba(88, 243, 255, 0.08);
     }
 
     .contact-block span {
@@ -1165,6 +1239,42 @@
       text-shadow: 0 0 8px rgba(98, 255, 179, 0.18);
     }
 
+    /* ===== BACK TO TOP ===== */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 80;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(88, 243, 255, 0.22);
+      background: rgba(8, 14, 28, 0.85);
+      backdrop-filter: blur(12px);
+      color: var(--cyan);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      border-color: rgba(88, 243, 255, 0.5);
+      box-shadow: var(--shadow-cyan), 0 8px 24px rgba(0,0,0,0.3);
+      transform: translateY(-3px);
+    }
+
     .site-footer {
       position: relative;
       z-index: 1;
@@ -1207,6 +1317,14 @@
       clip: rect(0, 0, 0, 0);
       white-space: nowrap;
       border: 0;
+    }
+
+    /* ===== SECTION DIVIDER ===== */
+    .section-divider {
+      width: min(var(--max), calc(100% - 2rem));
+      margin: 0 auto;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(88, 243, 255, 0.3), rgba(255, 87, 210, 0.2), rgba(98, 255, 179, 0.3), transparent);
     }
 
     @keyframes glitch-shift {
@@ -1359,6 +1477,11 @@
       .btn {
         width: 100%;
       }
+
+      .back-to-top {
+        bottom: 1.2rem;
+        right: 1.2rem;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1408,6 +1531,7 @@
           <li><a href="#outils">Outils</a></li>
           <li><a href="#projets">Projets</a></li>
           <li><a href="#experiences">Expériences</a></li>
+          <li><a href="#ctf">CTF</a></li>
           <li><a href="#formation">Formation</a></li>
           <li><a href="#cv">CV</a></li>
           <li><a href="#certifications">Certifications</a></li>
@@ -1418,6 +1542,7 @@
   </header>
 
   <main>
+    <!-- ═══════════════════ HERO ═══════════════════ -->
     <section class="hero section" id="accueil" aria-labelledby="hero-title">
       <div class="container hero-layout">
         <div class="hero-panel cyber-corners reveal from-left">
@@ -1427,7 +1552,7 @@
           </h1>
           <p class="hero-subtitle"><span class="typed" id="typed-subtitle"></span></p>
           <p class="hero-description">
-            Portfolio Personnel
+            Étudiant passionné par les <span class="hl-cyan">réseaux</span>, les <span class="hl-green">télécommunications</span> et la <span class="hl-magenta">cybersécurité</span>. En quête permanente de nouveaux défis techniques.
           </p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#projets">Découvrir mes projets</a>
@@ -1447,25 +1572,25 @@
             </div>
             <div class="terminal-body">
               <div class="terminal-line"><span class="prompt">&gt; role</span><span><strong>Étudiant en Réseaux &amp; Télécommunications</strong></span></div>
-              <div class="terminal-line"><span class="prompt">&gt; focus</span><span>Cybersécurité, 5G, IoT</span></div>
+              <div class="terminal-line"><span class="prompt">&gt; focus</span><span><span class="hl-cyan">Cybersécurité</span>, <span class="hl-green">5G</span>, <span class="hl-magenta">IoT</span></span></div>
               <div class="terminal-line"><span class="prompt">&gt; stack</span><span>Cisco, Python, Linux, Wireshark, GNS3, Docker</span></div>
-              <div class="terminal-line"><span class="prompt">&gt; mission</span><span>Contribuer à l'évolution des infrastructures de communication.</span></div>
+              <div class="terminal-line"><span class="prompt">&gt; mission</span><span>Contribuer à l'évolution des <span class="hl">infrastructures de communication</span>.</span></div>
               <div class="terminal-grid">
                 <div class="terminal-chip">
                   <small>Réseaux</small>
-                  TCP/IP, routage, commutation
+                  <span class="hl-cyan">TCP/IP</span>, routage, commutation
                 </div>
                 <div class="terminal-chip">
                   <small>Télécoms</small>
-                  4G/5G, fibres optiques
+                  <span class="hl-green">4G/5G</span>, fibres optiques
                 </div>
                 <div class="terminal-chip">
                   <small>Sécurité</small>
-                  Pare-feu, VPN, IDS
+                  <span class="hl-magenta">Pare-feu</span>, VPN, IDS
                 </div>
                 <div class="terminal-chip">
                   <small>Monitoring</small>
-                  Analyse trafic et supervision
+                  Analyse trafic et <span class="hl-cyan">supervision</span>
                 </div>
               </div>
             </div>
@@ -1474,18 +1599,21 @@
       </div>
     </section>
 
+    <div class="section-divider" aria-hidden="true"></div>
+
+    <!-- ═══════════════════ À PROPOS ═══════════════════ -->
     <section class="section" id="a-propos" aria-labelledby="about-title">
       <div class="container">
         <div class="section-heading reveal">
           <span class="kicker">À propos</span>
           <h2 id="about-title" class="typewriter-pending" data-typewriter="À Propos">À Propos</h2>
-          <p>Un profil technique orienté infrastructures, connectivité et sécurité, avec une approche pratique et une veille constante sur les technologies émergentes.</p>
+          <p>Un profil technique orienté <span class="hl-cyan">infrastructures</span>, <span class="hl-green">connectivité</span> et <span class="hl-magenta">sécurité</span>, avec une approche pratique et une veille constante sur les technologies émergentes.</p>
         </div>
 
         <div class="about-grid">
           <article class="glass-card cyber-corners reveal from-left">
             <p>
-              Passionné par les technologies de réseau et les télécommunications, je suis actuellement étudiant en BUT Réseaux et Télécommunications parcours Cybersécurité. Mon objectif est de contribuer à l'évolution des infrastructures de communication et de développer des solutions innovantes. Avec une solide formation technique et une approche pratique, je m'efforce de rester à la pointe des dernières technologies émergentes comme la 5G, l'IoT, et les réseaux définis par logiciel (SDN).
+              Passionné par les technologies de réseau et les télécommunications, je suis actuellement étudiant en <span class="hl-badge hl-badge--cyan">BUT Réseaux et Télécommunications</span> parcours <span class="hl-badge hl-badge--magenta">Cybersécurité</span>. Mon objectif est de contribuer à l'évolution des <span class="hl">infrastructures de communication</span> et de développer des <span class="hl-green">solutions innovantes</span>. Avec une solide formation technique et une approche pratique, je m'efforce de rester à la pointe des dernières technologies émergentes comme la <span class="hl-cyan">5G</span>, l'<span class="hl-green">IoT</span>, et les <span class="hl-magenta">réseaux définis par logiciel (SDN)</span>.
             </p>
           </article>
 
@@ -1493,19 +1621,19 @@
             <div class="skills-grid">
               <article class="skill-card">
                 <h3>Réseaux</h3>
-                <p>Configuration et administration de réseaux, protocoles TCP/IP, routage, commutation</p>
+                <p>Configuration et administration de réseaux, protocoles <span class="hl-cyan">TCP/IP</span>, routage, commutation</p>
               </article>
               <article class="skill-card">
                 <h3>Télécommunications</h3>
-                <p>Technologies sans fil, 4G/5G, fibres optiques, transmission de données</p>
+                <p>Technologies sans fil, <span class="hl-green">4G/5G</span>, fibres optiques, transmission de données</p>
               </article>
               <article class="skill-card">
                 <h3>Outils &amp; Technologies</h3>
-                <p>Cisco, Python, Linux, Wireshark, GNS3, Docker</p>
+                <p><span class="hl-cyan">Cisco</span>, <span class="hl-green">Python</span>, <span class="hl">Linux</span>, Wireshark, GNS3, Docker</p>
               </article>
               <article class="skill-card">
                 <h3>Sécurité</h3>
-                <p>Sécurité réseau, pare-feu, VPN, détection d'intrusions</p>
+                <p>Sécurité réseau, <span class="hl-magenta">pare-feu</span>, <span class="hl-cyan">VPN</span>, détection d'intrusions</p>
               </article>
             </div>
           </div>
@@ -1513,12 +1641,15 @@
       </div>
     </section>
 
+    <div class="section-divider" aria-hidden="true"></div>
+
+    <!-- ═══════════════════ COMPÉTENCES ═══════════════════ -->
     <section class="section" id="competences" aria-labelledby="competences-title">
       <div class="container">
         <div class="section-heading reveal">
           <span class="kicker">Compétences techniques</span>
           <h2 id="competences-title" class="typewriter-pending" data-typewriter="Compétences">Compétences</h2>
-          <p>Un socle technique construit autour des réseaux, de la cybersécurité, des systèmes et du développement.</p>
+          <p>Un socle technique construit autour des <span class="hl-cyan">réseaux</span>, de la <span class="hl-magenta">cybersécurité</span>, des <span class="hl">systèmes</span> et du <span class="hl-green">développement</span>.</p>
         </div>
 
         <div class="info-grid">
@@ -1572,12 +1703,15 @@
       </div>
     </section>
 
+    <div class="section-divider" aria-hidden="true"></div>
+
+    <!-- ═══════════════════ OUTILS ═══════════════════ -->
     <section class="section" id="outils" aria-labelledby="outils-title">
       <div class="container">
         <div class="section-heading reveal">
           <span class="kicker">Outils maîtrisés</span>
           <h2 id="outils-title" class="typewriter-pending" data-typewriter="Outils maîtrisés">Outils maîtrisés</h2>
-          <p>Les principaux environnements et logiciels utilisés dans mes projets académiques et techniques.</p>
+          <p>Les principaux environnements et logiciels utilisés dans mes projets <span class="hl-cyan">académiques</span> et <span class="hl-green">techniques</span>.</p>
         </div>
 
         <div class="info-grid">
@@ -1615,20 +1749,22 @@
       </div>
     </section>
 
+    <div class="section-divider" aria-hidden="true"></div>
 
+    <!-- ═══════════════════ PROJETS ═══════════════════ -->
     <section class="section" id="projets" aria-labelledby="projects-title">
       <div class="container">
         <div class="section-heading reveal">
           <span class="kicker">Projets</span>
           <h2 id="projects-title" class="typewriter-pending" data-typewriter="Projets">Projets</h2>
-          <p>Une sélection de SAE et de projets réalisés durant mon parcours en Réseaux & Télécommunications, avec un focus sur la cybersécurité, l'administration système et les infrastructures réseau.</p>
+          <p>Une sélection de SAE et de projets réalisés durant mon parcours en <span class="hl-cyan">Réseaux &amp; Télécommunications</span>, avec un focus sur la <span class="hl-magenta">cybersécurité</span>, l'<span class="hl">administration système</span> et les <span class="hl-green">infrastructures réseau</span>.</p>
         </div>
 
         <div class="projects-grid">
           <article class="project-card reveal">
             <span class="project-index">SAE 1.01</span>
             <h3>Se sensibiliser à l'hygiène informatique</h3>
-            <p>Cette SAE avait pour objectif de sensibiliser à l'hygiène informatique et à la cybersécurité. À travers la création du serious game "CybeR&amp;T" pour l'entreprise fictive SportE-Kom, j'ai étudié les principales menaces numériques comme le phishing, les malwares, les ransomwares, les spywares, les attaques par force brute et les botnets, tout en proposant des actions de prévention et de remédiation concrètes.</p>
+            <p>Cette SAE avait pour objectif de sensibiliser à l'<span class="hl-magenta">hygiène informatique</span> et à la cybersécurité. À travers la création du serious game <span class="hl-cyan">"CybeR&amp;T"</span> pour l'entreprise fictive SportE-Kom, j'ai étudié les principales menaces numériques comme le <span class="hl">phishing</span>, les <span class="hl">malwares</span>, les <span class="hl">ransomwares</span>, les spywares, les attaques par <span class="hl-magenta">force brute</span> et les botnets, tout en proposant des actions de prévention et de remédiation concrètes.</p>
             <ul class="tags" aria-label="Compétences et thèmes abordés">
               <li>Cybersécurité</li>
               <li>Phishing</li>
@@ -1640,7 +1776,7 @@
           <article class="project-card reveal">
             <span class="project-index">SAE 1.02</span>
             <h3>S'initier aux réseaux informatiques</h3>
-            <p>Cette SAE m'a permis d'apprendre à concevoir et déployer un accès internet temporaire fiable pour un événement de grande ampleur comme le Printemps de Bourges. J'y ai travaillé sur la topologie physique, le plan d'adressage, la distribution d'adresses IP, la configuration des passerelles par défaut, ainsi que sur la segmentation du réseau avec 9 VLANs distincts pour isoler les différents usages et services.</p>
+            <p>Cette SAE m'a permis d'apprendre à concevoir et déployer un <span class="hl-cyan">accès internet temporaire</span> fiable pour un événement de grande ampleur comme le Printemps de Bourges. J'y ai travaillé sur la topologie physique, le <span class="hl">plan d'adressage</span>, la distribution d'adresses IP, la configuration des passerelles par défaut, ainsi que sur la segmentation du réseau avec <span class="hl-green">9 VLANs</span> distincts pour isoler les différents usages et services.</p>
             <ul class="tags" aria-label="Compétences et thèmes abordés">
               <li>LAN</li>
               <li>VLAN</li>
@@ -1652,7 +1788,7 @@
           <article class="project-card reveal">
             <span class="project-index">SAÉ 1.03</span>
             <h3>Découvrir un dispositif de transmission</h3>
-            <p>Étude expérimentale de supports de transmission filaires, notamment la paire torsadée et la ligne coaxiale. À l'aide de GBF et d'oscilloscopes, j'ai mesuré la longueur, l'atténuation, la bande passante, le retard de propagation et les échos afin d'analyser les performances réelles des supports et de les comparer aux documentations industrielles.</p>
+            <p>Étude expérimentale de supports de transmission filaires, notamment la <span class="hl-cyan">paire torsadée</span> et la <span class="hl-green">ligne coaxiale</span>. À l'aide de GBF et d'oscilloscopes, j'ai mesuré la longueur, l'<span class="hl">atténuation</span>, la <span class="hl">bande passante</span>, le retard de propagation et les échos afin d'analyser les performances réelles des supports.</p>
             <ul class="tags" aria-label="Compétences et outils utilisés">
               <li>Paire torsadée</li>
               <li>Coaxial</li>
@@ -1664,7 +1800,7 @@
           <article class="project-card reveal">
             <span class="project-index">SAE 1.04</span>
             <h3>Se présenter sur Internet</h3>
-            <p>Cette SAE consistait à concevoir un site web personnel en partant de maquettes mobile et desktop réalisées sur Figma, puis à l’intégrer en HTML/CSS dans un fichier index.html. Le projet incluait aussi la mise en ligne sur le serveur de l’IUT via SSH ou FTP, ainsi que l’intégration éventuelle de contenus multimédias comme une vidéo YouTube ou une balise HTML video.</p>
+            <p>Cette SAE consistait à concevoir un <span class="hl-cyan">site web personnel</span> en partant de maquettes mobile et desktop réalisées sur <span class="hl-magenta">Figma</span>, puis à l'intégrer en <span class="hl-green">HTML/CSS</span> dans un fichier index.html. Le projet incluait aussi la mise en ligne sur le serveur de l'IUT via <span class="hl">SSH</span> ou FTP.</p>
             <ul class="tags" aria-label="Technologies utilisées">
               <li>Figma</li>
               <li>HTML/CSS</li>
@@ -1676,7 +1812,7 @@
           <article class="project-card reveal">
             <span class="project-index">SAE 1.05</span>
             <h3>Traiter des données</h3>
-            <p>Cette SAE consistait à analyser en Python un fichier CSV de données gouvernementales sur les taux de réussite au baccalauréat de 1997 à 2023, selon les séries et l’origine sociale des candidats. Le programme développé permettait de calculer des effectifs, des moyennes, des parts en pourcentage et des comparaisons entre années afin de mettre en évidence les disparités sociales dans la réussite scolaire.</p>
+            <p>Cette SAE consistait à analyser en <span class="hl-green">Python</span> un fichier <span class="hl-cyan">CSV</span> de données gouvernementales sur les taux de réussite au baccalauréat de 1997 à 2023. Le programme développé permettait de calculer des <span class="hl">effectifs</span>, des <span class="hl">moyennes</span>, des parts en pourcentage et des comparaisons entre années afin de mettre en évidence les <span class="hl-magenta">disparités sociales</span> dans la réussite scolaire.</p>
             <ul class="tags" aria-label="Compétences et outils utilisés">
               <li>Python</li>
               <li>CSV</li>
@@ -1688,7 +1824,7 @@
           <article class="project-card reveal">
             <span class="project-index">SAE 2.02</span>
             <h3>Mesurer et caractériser un signal</h3>
-            <p>Cette SAE portait sur l’étude de signaux hertziens du quotidien : radio FM, téléphonie mobile de la 2G à la 4G, TNT, satellite ASTRA et WiFi. À l’aide d’un analyseur de spectres, d’un mesureur de champ, d’un analyseur vectoriel, d’équipements WiFi Ubiquiti et de l’outil Cartoradio, nous avons réalisé des mesures de fréquence, d’amplitude, de bande occupée, de puissance reçue, d’atténuation, de bilan de liaison et de portée WiFi. </p>
+            <p>Cette SAE portait sur l'étude de <span class="hl-cyan">signaux hertziens</span> du quotidien : radio FM, téléphonie mobile de la <span class="hl">2G</span> à la <span class="hl-green">4G</span>, TNT, satellite <span class="hl">ASTRA</span> et WiFi. À l'aide d'un <span class="hl-magenta">analyseur de spectres</span>, d'un mesureur de champ et d'équipements WiFi <span class="hl-cyan">Ubiquiti</span>, nous avons réalisé des mesures de fréquence, d'amplitude et de bilan de liaison.</p>
             <ul class="tags" aria-label="Compétences et outils utilisés">
               <li>Analyse de spectre</li>
               <li>WiFi / Radio</li>
@@ -1701,7 +1837,7 @@
           <article class="project-card reveal">
             <span class="project-index">SAE 2.04</span>
             <h3>Projet intégratif</h3>
-            <p>Dans cette SAE, notre entreprise virtuelle a répondu à un appel d’offres conjoint de la NBA et de l’EuroLeague pour créer la Basketball World League (BWL). En équipe de 3 à 4 étudiants, nous devions concevoir et administrer un réseau interne commun reposant sur une topologie hiérarchique en 3 couches. Le projet combinait infrastructure physique et virtuelle, avec la mise en place de VLANs dédiés, d’un adressage IP dynamique via DHCP, de services Web et DNS, ainsi qu’un serveur GrayLog pour centraliser les journaux. Une attention particulière a aussi été portée à la sécurité, au filtrage, au durcissement des équipements et à la haute disponibilité.</p>
+            <p>Dans cette SAE, notre entreprise virtuelle a répondu à un appel d'offres conjoint de la NBA et de l'EuroLeague pour créer la <span class="hl-green">Basketball World League (BWL)</span>. Nous devions concevoir un réseau interne reposant sur une <span class="hl-cyan">topologie hiérarchique en 3 couches</span>. Le projet combinait infrastructure physique et virtuelle, avec la mise en place de <span class="hl">VLANs</span>, d'un <span class="hl">DHCP</span>, de services <span class="hl-cyan">Web et DNS</span>, ainsi qu'un serveur <span class="hl-magenta">GrayLog</span> pour centraliser les journaux.</p>
             <ul class="tags" aria-label="Compétences et outils utilisés">
               <li>VLAN / Sécurité</li>
               <li>DNS / DHCP</li>
@@ -1712,7 +1848,7 @@
           <article class="project-card reveal">
             <span class="project-index">SAE 3.02</span>
             <h3>Développer des applications communicantes</h3>
-            <p>Cette SAE consistait à développer une application communicante reposant sur une architecture clients/serveur en Python. Le système s’organisait autour de trois composants principaux : une interface utilisateur (Int-Usr), une partie dédiée à l’Internet des Objets et aux capteurs (Int-IoT), ainsi qu’un serveur central. L’application fonctionnait principalement en ligne de commande et permettait de gérer la communication réseau, le traitement des données issues des capteurs, le stockage en base de données, ainsi que les opérations de sauvegarde et de restauration. Le projet intégrait aussi une gestion des comptes, des rôles et des droits d’accès.</p>
+            <p>Cette SAE consistait à développer une <span class="hl-cyan">application communicante</span> reposant sur une architecture <span class="hl-green">clients/serveur</span> en Python. Le système s'organisait autour de trois composants : une interface utilisateur, une partie dédiée à l'<span class="hl-magenta">IoT</span> et aux capteurs, ainsi qu'un <span class="hl">serveur central</span>. Le projet intégrait la gestion de la communication réseau, le <span class="hl-cyan">stockage en base de données</span>, ainsi que les opérations de sauvegarde et de restauration.</p>
             <ul class="tags" aria-label="Compétences et outils utilisés">
               <li>Python</li>
               <li>Client / Serveur</li>
@@ -1724,7 +1860,7 @@
           <article class="project-card reveal">
             <span class="project-index">SAE 3.03</span>
             <h3>Concevoir un réseau informatique multi-sites</h3>
-            <p>Cette SAE consistait à concevoir un réseau informatique sécurisé multi-sites en simulant au minimum deux sites distincts interconnectés par un backbone MPLS. Le projet demandait de garantir la séparation logique des flux avec plusieurs VLANs sur chaque site, de sécuriser les échanges via un VPN MPLS, et de mettre en place des mécanismes de contrôle d’accès comme les ACL, le filtrage de routes, le pare-feu, le DNS snooping et le DHCP snooping. L’ensemble de l’architecture a été modélisé et validé sous GNS3, puis documenté dans un rapport technique détaillant la topologie, le plan d’adressage, les configurations et les tests réalisés.</p>
+            <p>Cette SAE consistait à concevoir un <span class="hl-cyan">réseau sécurisé multi-sites</span> interconnectés par un backbone <span class="hl-green">MPLS</span>. Le projet demandait de garantir la séparation logique des flux avec plusieurs <span class="hl">VLANs</span>, de sécuriser les échanges via un <span class="hl-magenta">VPN MPLS</span>, et de mettre en place des mécanismes comme les <span class="hl-cyan">ACL</span>, le filtrage de routes, le pare-feu, le <span class="hl">DNS snooping</span> et le <span class="hl">DHCP snooping</span>. L'architecture a été modélisée et validée sous <span class="hl-green">GNS3</span>.</p>
             <ul class="tags" aria-label="Compétences et outils utilisés">
               <li>GNS3</li>
               <li>MPLS / VPN</li>
@@ -1736,7 +1872,7 @@
           <article class="project-card reveal">
             <span class="project-index">SAE 3.04</span>
             <h3>Découvrir le pentesting</h3>
-            <p>Cette SAE m’a permis de découvrir la cybersécurité offensive à travers une méthodologie complète de pentest : scan, énumération, formulation d’hypothèses, validation par preuve de concept, exploitation contrôlée et post-exploitation. J’ai utilisé un environnement Kali Linux, la plateforme Hack The Box via OpenVPN, ainsi que des outils comme nmap, gobuster, ffuf, enum4linux, nikto, searchsploit, Metasploit, hydra, linPEAS et winPEAS. Le projet incluait aussi l’analyse de la surface externe d’une entreprise avec des outils comme Sentinelbox, VirusTotal, dmarcian, Mozilla Observatory et Phishtool, puis la rédaction d’un rapport d’audit détaillant les vulnérabilités trouvées, les preuves d’exploitation et les recommandations correctives.</p>
+            <p>Cette SAE m'a permis de découvrir la <span class="hl-magenta">cybersécurité offensive</span> à travers une méthodologie complète de pentest : <span class="hl-cyan">scan</span>, <span class="hl">énumération</span>, formulation d'hypothèses, validation par preuve de concept, <span class="hl-magenta">exploitation</span> contrôlée et <span class="hl-green">post-exploitation</span>. J'ai utilisé <span class="hl-cyan">Kali Linux</span>, la plateforme <span class="hl-badge hl-badge--green">Hack The Box</span> via OpenVPN, ainsi que des outils comme <span class="hl">nmap</span>, <span class="hl">gobuster</span>, <span class="hl">Metasploit</span>, <span class="hl">hydra</span> et <span class="hl">linPEAS</span>.</p>
             <ul class="tags" aria-label="Compétences et outils utilisés">
               <li>Kali Linux</li>
               <li>Nmap / Metasploit</li>
@@ -1748,7 +1884,7 @@
           <article class="project-card reveal">
             <span class="project-index">SAE 4.01</span>
             <h3>Sécuriser un système avec un serveur bastion</h3>
-            <p>Cette SAE portait sur la conception et l’implémentation d’un serveur bastion sécurisé afin de protéger les accès à privilèges d’un réseau d’entreprise. Le projet reposait sur le déploiement d’Apache Guacamole sur Debian pour centraliser, limiter et tracer les connexions d’administration, avec une authentification liée à Active Directory et une séparation des comptes selon le modèle de tiering. L’infrastructure virtualisée sous VirtualBox intégrait aussi un pare-feu Netfilter/iptables, un reverse proxy TLS avec mitmproxy, ainsi qu’une sonde IDS Snort pour surveiller les flux. Ce travail a permis d’étudier les risques liés au vol d’identifiants, aux attaques de type Man-in-the-Middle, au mouvement latéral et aux vulnérabilités protocolaires comme RDP.</p>
+            <p>Cette SAE portait sur la conception d'un <span class="hl-magenta">serveur bastion sécurisé</span> afin de protéger les accès à privilèges d'un réseau d'entreprise. Le projet reposait sur le déploiement d'<span class="hl-cyan">Apache Guacamole</span> sur Debian pour centraliser et tracer les connexions d'administration, avec une authentification liée à <span class="hl">Active Directory</span> et une séparation des comptes selon le <span class="hl-green">modèle de tiering</span>. L'infrastructure intégrait aussi un <span class="hl-magenta">pare-feu Netfilter/iptables</span>, un reverse proxy TLS et une sonde <span class="hl-badge hl-badge--cyan">IDS Snort</span> pour surveiller les flux.</p>
             <ul class="tags" aria-label="Compétences et outils utilisés">
               <li>Apache Guacamole</li>
               <li>Active Directory</li>
@@ -1761,19 +1897,21 @@
       </div>
     </section>
 
+    <div class="section-divider" aria-hidden="true"></div>
 
+    <!-- ═══════════════════ EXPÉRIENCES ═══════════════════ -->
     <section class="section" id="experiences" aria-labelledby="experiences-title">
       <div class="container">
         <div class="section-heading reveal">
           <span class="kicker">Expériences / Projets personnels</span>
           <h2 id="experiences-title" class="typewriter-pending" data-typewriter="Expériences">Expériences</h2>
-          <p>Des environnements personnels et pratiques pour approfondir mes compétences hors des SAE.</p>
+          <p>Des environnements personnels et pratiques pour approfondir mes compétences <span class="hl-cyan">hors des SAE</span>.</p>
         </div>
 
         <div class="info-grid">
           <article class="glass-card wide-card cyber-corners reveal from-left">
             <h3>Home Lab réseau</h3>
-            <p>Simulation de réseaux multi-sites, mise en place de routage dynamique et déploiement de solutions VPN pour tester des architectures proches du contexte professionnel.</p>
+            <p>Simulation de <span class="hl-cyan">réseaux multi-sites</span>, mise en place de <span class="hl-green">routage dynamique</span> et déploiement de solutions <span class="hl-magenta">VPN</span> pour tester des architectures proches du contexte professionnel.</p>
             <ul class="tags" aria-label="Home Lab réseau">
               <li>Multi-sites</li>
               <li>Routage dynamique</li>
@@ -1783,7 +1921,7 @@
 
           <article class="glass-card wide-card cyber-corners reveal from-right">
             <h3>Lab cybersécurité</h3>
-            <p>Entraînement sur des machines vulnérables, pratique du pentest sur Hack The Box et analyse de trafic pour renforcer mes réflexes en cybersécurité offensive et défensive.</p>
+            <p>Entraînement sur des <span class="hl-magenta">machines vulnérables</span>, pratique du <span class="hl-cyan">pentest</span> sur <span class="hl-badge hl-badge--green">Hack The Box</span> et <span class="hl-green">analyse de trafic</span> pour renforcer mes réflexes en cybersécurité offensive et défensive.</p>
             <ul class="tags" aria-label="Lab cybersécurité">
               <li>Hack The Box</li>
               <li>Pentest</li>
@@ -1793,12 +1931,16 @@
         </div>
       </div>
     </section>
+
+    <div class="section-divider" aria-hidden="true"></div>
+
+    <!-- ═══════════════════ CTF ═══════════════════ -->
     <section class="section" id="ctf" aria-labelledby="ctf-title">
       <div class="container">
         <div class="section-heading reveal">
           <span class="kicker">Compétitions CTF</span>
           <h2 id="ctf-title" class="typewriter-pending" data-typewriter="CTF">CTF</h2>
-          <p>Participation à des compétitions de cybersécurité pour mettre en pratique mes compétences offensives et défensives dans un cadre compétitif.</p>
+          <p>Participation à des compétitions de <span class="hl-magenta">cybersécurité</span> pour mettre en pratique mes compétences <span class="hl-cyan">offensives</span> et <span class="hl-green">défensives</span> dans un cadre compétitif.</p>
         </div>
 
         <div class="info-grid">
@@ -1814,7 +1956,7 @@
               </div>
             </div>
             <p style="color:var(--muted); line-height:1.85; margin-bottom:1rem;">
-              Participation au CTF <strong style="color:var(--text);">Mars@Hack</strong>, une compétition de cybersécurité en équipe organisée dans le cadre de l'événement éponyme. Nous avons terminé à la <strong style="color:var(--green);">8ème place</strong> du classement général, en résolvant des challenges couvrant différentes catégories de la sécurité offensive et défensive.
+              Participation au CTF <span class="hl-cyan">Mars@Hack</span>, une compétition de cybersécurité en équipe organisée dans le cadre de l'événement éponyme. Nous avons terminé à la <span class="hl-badge hl-badge--green">8<sup>ème</sup> place</span> du classement général, en résolvant des challenges couvrant différentes catégories de la <span class="hl-magenta">sécurité offensive</span> et <span class="hl-green">défensive</span>.
             </p>
             <ul class="tags" aria-label="Catégories de challenges">
               <li>Web</li>
@@ -1828,92 +1970,105 @@
         </div>
       </div>
     </section>
+
+    <div class="section-divider" aria-hidden="true"></div>
+
+    <!-- ═══════════════════ FORMATION ═══════════════════ -->
     <section class="section" id="formation" aria-labelledby="formation-title">
       <div class="container">
         <div class="section-heading reveal">
           <span class="kicker">Formation</span>
           <h2 id="formation-title" class="typewriter-pending" data-typewriter="Formation">Formation</h2>
-          <p>Mon parcours académique actuel dans le domaine des réseaux, des systèmes et de la cybersécurité.</p>
+          <p>Mon parcours académique dans le domaine des <span class="hl-cyan">réseaux</span>, des <span class="hl">systèmes</span> et de la <span class="hl-magenta">cybersécurité</span>.</p>
         </div>
 
         <div class="formation-grid">
           <article class="glass-card timeline-card cyber-corners reveal">
             <span class="timeline-badge">2024 - 2026</span>
             <h3>BUT Réseaux &amp; Télécommunications</h3>
-            <p class="timeline-meta">Parcours Cybersécurité</p>
-            <p>IUT de La Rochelle</p>
+            <p class="timeline-meta">Parcours <span class="hl-magenta">Cybersécurité</span></p>
+            <p><span class="hl-cyan">IUT de La Rochelle</span></p>
           </article>
         </div>
       </div>
     </section>
 
+    <div class="section-divider" aria-hidden="true"></div>
+
+    <!-- ═══════════════════ CV ═══════════════════ -->
     <section class="section" id="cv" aria-labelledby="cv-title">
       <div class="container">
         <div class="section-heading reveal">
           <span class="kicker">CV</span>
           <h2 id="cv-title" class="typewriter-pending" data-typewriter="CV">CV</h2>
-          <p>Un accès rapide à mon CV pour faciliter la lecture de mon parcours par les recruteurs.</p>
+          <p>Un accès rapide à mon CV pour faciliter la lecture de mon <span class="hl-green">parcours</span> par les recruteurs.</p>
         </div>
 
         <div class="cv-grid">
           <article class="glass-card cv-card cyber-corners reveal">
             <h3>Télécharger mon CV</h3>
-            <a class="btn btn-primary" href="Enzo_Aurouet_CV.pdf" title="Ajoute ici le lien vers ton CV PDF">Télécharger mon CV (PDF)</a>
+            <p>Retrouvez l'ensemble de mes <span class="hl-cyan">compétences</span>, <span class="hl-green">expériences</span> et <span class="hl-magenta">certifications</span> dans un format synthétique.</p>
+            <a class="btn btn-primary" href="Enzo_Aurouet_CV.pdf" download>Télécharger mon CV (PDF)</a>
           </article>
         </div>
       </div>
     </section>
 
+    <div class="section-divider" aria-hidden="true"></div>
 
+    <!-- ═══════════════════ CERTIFICATIONS ═══════════════════ -->
     <section class="section" id="certifications" aria-labelledby="certifications-title">
       <div class="container">
         <div class="section-heading reveal">
           <span class="kicker">Certifications</span>
           <h2 id="certifications-title" class="typewriter-pending" data-typewriter="Certifications">Certifications</h2>
-          <p>Une sélection de badges et certifications obtenus dans les domaines des réseaux, de l’administration système et de la cybersécurité.</p>
+          <p>Une sélection de badges et certifications obtenus dans les domaines des <span class="hl-cyan">réseaux</span>, de l'<span class="hl">administration système</span> et de la <span class="hl-magenta">cybersécurité</span>.</p>
         </div>
 
         <div class="certifications-grid">
           <article class="cert-card reveal">
             <span class="cert-badge">Open Badge Factory</span>
             <h3>CybeR&amp;T - Pentest</h3>
-            <p>Certification orientée méthodologie de pentest, énumération, exploitation contrôlée et rédaction d’un rapport d’audit.</p>
+            <p>Certification orientée méthodologie de <span class="hl-magenta">pentest</span>, <span class="hl-cyan">énumération</span>, <span class="hl">exploitation contrôlée</span> et rédaction d'un rapport d'audit.</p>
             <a class="cert-link" href="https://openbadgefactory.com/obv3/credentials/76503088bfb8fa46145d89e19f3b1f2847f2140b" target="_blank" rel="noopener noreferrer">Voir la certification</a>
           </article>
           <article class="cert-card reveal">
             <span class="cert-badge">Credly</span>
             <h3>CCNA: Switching, Routing, and Wireless Essentials</h3>
-            <p>Certification Cisco centrée sur la commutation, le routage, le Wi-Fi et les fondamentaux d’administration réseau.</p>
+            <p>Certification <span class="hl-cyan">Cisco</span> centrée sur la <span class="hl-green">commutation</span>, le <span class="hl">routage</span>, le Wi-Fi et les fondamentaux d'administration réseau.</p>
             <a class="cert-link" href="https://www.credly.com/badges/e50d2906-0dc6-43fa-bf11-d90e70b71e49/linked_in_profile" target="_blank" rel="noopener noreferrer">Voir la certification</a>
           </article>
           <article class="cert-card reveal">
             <span class="cert-badge">Open Badge Factory</span>
             <h3>CybeR&amp;T - LAN et Services</h3>
-            <p>Certification liée à l’administration LAN, aux services réseau et à la mise en œuvre d’infrastructures fonctionnelles et sécurisées.</p>
+            <p>Certification liée à l'administration <span class="hl-cyan">LAN</span>, aux <span class="hl-green">services réseau</span> et à la mise en œuvre d'<span class="hl">infrastructures fonctionnelles</span> et sécurisées.</p>
             <a class="cert-link" href="https://openbadgefactory.com/v1/assertion/50b443a4093c3d40a37e42727e1732e36c11e8a9.html" target="_blank" rel="noopener noreferrer">Voir la certification</a>
           </article>
           <article class="cert-card reveal">
             <span class="cert-badge">Open Badge Factory</span>
             <h3>CybeR&amp;T - Hygiène Informatique</h3>
-            <p>Certification dédiée aux bonnes pratiques de cybersécurité, à la prévention des risques et à l’hygiène numérique.</p>
+            <p>Certification dédiée aux <span class="hl-green">bonnes pratiques</span> de cybersécurité, à la <span class="hl-magenta">prévention des risques</span> et à l'hygiène numérique.</p>
             <a class="cert-link" href="https://openbadgefactory.com/v1/assertion/ec246450990bca17276c92f6a6577a55ee52dedb.html" target="_blank" rel="noopener noreferrer">Voir la certification</a>
           </article>
           <article class="cert-card reveal">
             <span class="cert-badge">Credly</span>
             <h3>CCNA: Introduction to Networks</h3>
-            <p>Certification Cisco sur les bases des réseaux, l’adressage IP, les protocoles et les équipements de communication.</p>
+            <p>Certification <span class="hl-cyan">Cisco</span> sur les bases des réseaux, l'<span class="hl-green">adressage IP</span>, les <span class="hl">protocoles</span> et les équipements de communication.</p>
             <a class="cert-link" href="https://www.credly.com/badges/bbcff22b-e397-4e2a-aa10-abc2d80c1a7f/linked_in_profile" target="_blank" rel="noopener noreferrer">Voir la certification</a>
           </article>
         </div>
       </div>
     </section>
 
+    <div class="section-divider" aria-hidden="true"></div>
+
+    <!-- ═══════════════════ CONTACT ═══════════════════ -->
     <section class="section" id="contact" aria-labelledby="contact-title">
       <div class="container">
         <div class="section-heading reveal">
           <span class="kicker">Contact</span>
           <h2 id="contact-title" class="typewriter-pending" data-typewriter="Contact">Contact</h2>
-          <p>Un formulaire de contact immersif accompagné des informations essentielles pour prendre contact rapidement.</p>
+          <p>Un formulaire de contact accompagné des informations essentielles pour <span class="hl-green">prendre contact rapidement</span>.</p>
         </div>
 
         <div class="contact-layout">
@@ -1921,15 +2076,19 @@
             <div class="contact-stack">
               <div class="contact-block">
                 <span>Email</span>
-                <a href="mailto:enzo.aurouet@outlook.fr">enzo.aurouet@outlook.fr</a>
+                <a href="mailto:enzo.aurouet@gmail.com">enzo.aurouet@gmail.com</a>
               </div>
               <div class="contact-block">
                 <span>LinkedIn</span>
-                <a href="https://www.linkedin.com/in/enzo-aurouet-83b6622a1" title="Ajoutez ici votre URL LinkedIn">LinkedIn</a>
+                <a href="https://www.linkedin.com/in/enzo-aurouet-83b6622a1" target="_blank" rel="noopener noreferrer">Voir mon profil LinkedIn</a>
               </div>
               <div class="contact-block">
-                <span>Navigation</span>
-                <p><a href="#accueil">Accueil</a>, <a href="#a-propos">À Propos</a>, <a href="#competences">Compétences</a>, <a href="#outils">Outils</a>, <a href="#projets">Projets</a>, <a href="#experiences">Expériences</a>, <a href="#formation">Formation</a>, <a href="#cv">CV</a>, <a href="#certifications">Certifications</a>, <a href="#contact">Contact</a></p>
+                <span>Localisation</span>
+                <p><span class="hl-cyan">La Rochelle</span>, France</p>
+              </div>
+              <div class="contact-block">
+                <span>Disponibilité</span>
+                <p><span class="hl-badge hl-badge--green">Ouvert aux opportunités</span></p>
               </div>
             </div>
           </aside>
@@ -1957,13 +2116,18 @@
     </section>
   </main>
 
+  <!-- Back to top button -->
+  <button class="back-to-top" id="back-to-top" aria-label="Retour en haut de page">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
   <footer class="site-footer">
     <div class="footer-wrap">
       <p><strong>© 2025 Enzo Aurouet.</strong> Tous droits réservés.</p>
       <p>
-        <a href="mailto:enzo.aurouet@outlook.fr">enzo.aurouet@outlook.fr</a>
+        <a href="mailto:enzo.aurouet@gmail.com">enzo.aurouet@gmail.com</a>
         <span aria-hidden="true"> | </span>
-        <a href="https://www.linkedin.com/in/enzo-aurouet-83b6622a1" title="Ajoutez ici votre URL LinkedIn">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/enzo-aurouet-83b6622a1" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </p>
     </div>
   </footer>
@@ -1980,6 +2144,7 @@
       const typedSubtitle = document.getElementById('typed-subtitle');
       const form = document.getElementById('contact-form');
       const formMessage = document.getElementById('form-message');
+      const backToTop = document.getElementById('back-to-top');
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       const subtitleText = 'Étudiant en Réseaux & Télécommunications';
@@ -2101,6 +2266,20 @@
       updateProgress();
       window.addEventListener('scroll', updateProgress, { passive: true });
       window.addEventListener('resize', updateProgress);
+
+      // Back to top
+      function updateBackToTop() {
+        if (window.scrollY > 600) {
+          backToTop.classList.add('visible');
+        } else {
+          backToTop.classList.remove('visible');
+        }
+      }
+      updateBackToTop();
+      window.addEventListener('scroll', updateBackToTop, { passive: true });
+      backToTop?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
 
       form?.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -2237,16 +2416,10 @@
         pointer.x = event.clientX;
         pointer.y = event.clientY;
         pointer.active = true;
-      }, { passive: true });
+      });
 
       window.addEventListener('pointerleave', () => {
         pointer.active = false;
-        pointer.x = null;
-        pointer.y = null;
-      });
-
-      window.addEventListener('beforeunload', () => {
-        if (animationFrame) window.cancelAnimationFrame(animationFrame);
       });
     })();
   </script>
