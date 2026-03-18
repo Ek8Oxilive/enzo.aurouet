@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheatsheet DS — Bash & PowerShell</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232736;
+    --border: #2e3347;
+    --text: #e2e4ed;
+    --text-dim: #8b8fa7;
+    --bash-accent: #4ade80;
+    --bash-bg: #0d2818;
+    --bash-border: #1a4d2e;
+    --ps-accent: #60a5fa;
+    --ps-bg: #0c1929;
+    --ps-border: #1a3a5c;
+    --warn: #fbbf24;
+    --pink: #f472b6;
+    --orange: #fb923c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2.5rem 2rem;
+    background: linear-gradient(135deg, var(--bash-bg), var(--ps-bg));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 40%, rgba(74,222,128,0.06) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(96,165,250,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .header h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+  .header h1 .bash { color: var(--bash-accent); }
+  .header h1 .ps { color: var(--ps-accent); }
+  .header p { color: var(--text-dim); font-size: 0.95rem; }
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+  }
+  .nav a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    transition: all 0.2s;
+  }
+  .nav a:hover { color: var(--text); border-color: var(--text-dim); }
+  .nav a.bash-link:hover { color: var(--bash-accent); border-color: var(--bash-accent); }
+  .nav a.ps-link:hover { color: var(--ps-accent); border-color: var(--ps-accent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+  .section {
+    margin-bottom: 2.5rem;
+    grid-column: span 2;
+  }
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-title .num {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.4rem;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--text-dim); }
+  .card.bash { border-left: 3px solid var(--bash-accent); }
+  .card.ps { border-left: 3px solid var(--ps-accent); }
+  .card.both { border-left: 3px solid var(--warn); }
+
+  .card h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .card h3 .tag {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tag.bash-tag { background: var(--bash-bg); color: var(--bash-accent); border: 1px solid var(--bash-border); }
+  .tag.ps-tag { background: var(--ps-bg); color: var(--ps-accent); border: 1px solid var(--ps-border); }
+
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 0.6rem 0;
+  }
+  pre.bash-code { background: var(--bash-bg); border: 1px solid var(--bash-border); color: #a7f3d0; }
+  pre.ps-code { background: var(--ps-bg); border: 1px solid var(--ps-border); color: #93c5fd; }
+
+  .note {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 0.5rem;
+    padding-left: 0.8rem;
+    border-left: 2px solid var(--border);
+  }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 700px) { .comparison { grid-template-columns: 1fr; } }
+
+  .tip {
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    font-size: 0.82rem;
+    margin: 0.6rem 0;
+    color: var(--warn);
+  }
+  .tip::before { content: '💡 '; }
+
+  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 900px) { .columns { grid-template-columns: 1fr; } }
+
+  .warn-box {
+    background: rgba(244,114,182,0.08);
+    border: 1px solid rgba(244,114,182,0.2);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    font-size: 0.82rem;
+    color: var(--pink);
+    margin: 0.6rem 0;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    background: var(--surface2);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 1.5rem;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📋 Cheatsheet DS — <span class="bash">Bash</span> & <span class="ps">PowerShell</span></h1>
+  <p>R&T La Rochelle — Révisions basées sur les TP1 à TP4 · ~2h · 50% Bash / 50% PowerShell</p>
+</div>
+
+<nav class="nav">
+  <a href="#tests-boucles" class="bash-link">Tests & Boucles</a>
+  <a href="#arguments">Arguments</a>
+  <a href="#chaines" class="bash-link">Chaînes (grep, cut…)</a>
+  <a href="#objets" class="ps-link">Objets PowerShell</a>
+  <a href="#utilisateurs">Utilisateurs & Groupes</a>
+  <a href="#serialisation">JSON & CSV</a>
+  <a href="#outils-inconnus">Outils inconnus</a>
+</nav>
+
+<div class="grid">
+
+<!-- ============================================== -->
+<!-- 1. TESTS & BOUCLES -->
+<!-- ============================================== -->
+<div class="section" id="tests-boucles">
+  <div class="section-title" style="background: var(--surface2);">
+    <span class="num" style="background:var(--warn);color:#000;">1</span>
+    Tests (if/elif/else) & Boucles (for/while)
+  </div>
+
+  <div class="columns">
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> Tests conditionnels</h3>
+<pre class="bash-code"># Syntaxe if / elif / else
+if [ "$1" = "-h" ] || [ "$1" = "--help" ] ; then
+    echo "Aide"
+    exit 0
+elif [ -z "$1" ] ; then       # -z = chaîne vide
+    echo "Aucun argument"
+    exit 1
+else
+    echo "Argument: $1"
+fi
+
+# Opérateurs de test courants
+[ -z "$var" ]      # var est vide
+[ -n "$var" ]      # var non vide
+[ "$a" = "$b" ]    # égalité de chaînes
+[ "$a" != "$b" ]   # différence
+[ "$a" -eq "$b" ]  # égalité numérique
+[ "$a" -gt "$b" ]  # supérieur (numérique)
+[ "$a" -lt "$b" ]  # inférieur
+[ -f fichier ]     # fichier existe
+[ -d dossier ]     # dossier existe
+[ ! condition ]    # négation
+
+# Alternative: test
+test "$LOG_LEVEL" = "INFO" && echo "info"</pre>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> Tests conditionnels</h3>
+<pre class="ps-code"># Syntaxe if / elseif / else
+if ($user.expires -eq "never") {
+    New-LocalUser -Name $user.username -NoPassword
+} elseif ($expires -lt (Get-Date)) {
+    Write-Output "Expiré"
+} else {
+    New-LocalUser -Name $user.username `
+        -AccountExpires $user.expires -NoPassword
+}
+
+# Opérateurs de comparaison
+-eq    # égal
+-ne    # différent
+-gt    # supérieur
+-lt    # inférieur
+-ge    # supérieur ou égal
+-le    # inférieur ou égal
+-like  # pattern matching (* ?)
+-match # regex
+
+# Exemple avec -like (TP4)
+if ((./timeme $pass) -like "Success*") {
+    echo "Trouvé: $pass"
+}</pre>
+    </div>
+
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> Boucles</h3>
+<pre class="bash-code"># for — itérer sur des arguments
+for a in "$@" ; do
+    echo $a
+done
+
+# for — séquences / ranges
+for n in {0..9}-{0..9}-{0..9}-{0..9} ; do
+    echo $n
+done
+
+# for — itérer sur des lettres
+for l in {a..z} ; do
+    echo $l
+done
+
+# while — lire un fichier ligne par ligne
+while IFS="," read -r username group expires ; do
+    echo "$username dans $group"
+done &lt; &lt;(tail -n +2 users.csv)
+
+# while — boucle infinie
+while true ; do
+    # ...
+    break   # sortir de la boucle
+done</pre>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> Boucles</h3>
+<pre class="ps-code"># foreach — itérer sur un tableau
+foreach ($i in $arg) {
+    Write-Output $i
+}
+
+# foreach — itérer sur un objet/collection
+$users = Import-CSV .\users.csv
+foreach ($user in $users) {
+    Write-Output $user.username
+}
+
+# for — boucle classique
+for ($i = 1 ; $i -le $n ; $i++) {
+    Write-Output "Itération $i"
+}
+
+# for — boucles imbriquées (brute force)
+foreach ($a in 1..9) {
+    foreach ($b in 1..9) {
+        # ...
+    }
+}
+
+# while — boucle infinie
+while ($true) {
+    # ...
+    break   # sortir
+}</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- 2. ARGUMENTS -->
+<!-- ============================================== -->
+<div class="section" id="arguments">
+  <div class="section-title" style="background: var(--surface2);">
+    <span class="num" style="background:var(--orange);color:#000;">2</span>
+    Scripts avec arguments
+  </div>
+
+  <div class="columns">
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> Arguments</h3>
+<pre class="bash-code"># Variables spéciales
+$0           # nom du script
+$1, $2...    # arguments positionnels
+$@           # tous les arguments (séparés)
+$*           # tous les arguments (un seul mot)
+$#           # nombre d'arguments
+$?           # code retour dernière commande
+
+# Usage pattern classique (TP1: echo.sh)
+usage () {
+    echo "$0 [-h|--help] arg [arg ...]"
+}
+
+if [ -z $1 ] ; then
+    usage
+    exit 1
+fi
+
+if [ $1 = "-h" ] || [ $1 = "--help" ] ; then
+    usage
+    exit 0
+fi
+
+# Itérer sur tous les arguments
+for a in "$@" ; do
+    echo $a
+done</pre>
+      <div class="note">⚠️ <code>exit 0</code> = succès, <code>exit 1</code> = erreur</div>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> Paramètres</h3>
+<pre class="ps-code"># Bloc Param (en haut du script)
+Param(
+    [Parameter(Mandatory)]    # obligatoire
+    [String[]]$arg            # tableau de chaînes
+)
+
+# Param avec valeur par défaut
+Param(
+    [int]$n,                  # optionnel, défaut 0
+    [String]$lang             # optionnel, défaut ""
+)
+
+# Aide intégrée (Get-Help .\Script.ps1)
+&lt;#
+    .SYNOPSIS
+    Description courte du script.
+
+    .PARAMETER arg
+    Description du paramètre.
+
+    .EXAMPLE
+    PS&gt; .\Script.ps1 hello
+#&gt;
+Param(
+    [Parameter(Mandatory)]
+    [String[]]$arg
+)
+
+# Si Mandatory, PowerShell demande la
+# valeur interactivement si non fournie</pre>
+      <div class="note">PowerShell gère automatiquement -h via <code>Get-Help</code></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- 3. CHAÎNES DE CARACTÈRES -->
+<!-- ============================================== -->
+<div class="section" id="chaines">
+  <div class="section-title" style="background: var(--surface2);">
+    <span class="num" style="background:var(--bash-accent);color:#000;">3</span>
+    Manipulation de chaînes — Bash (grep, cut, head, tail, awk…)
+  </div>
+
+  <div class="columns">
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> grep — Chercher</h3>
+<pre class="bash-code"># Compter les occurrences
+grep -c 'File does not exist' Apache.log
+
+# Expression régulière étendue
+grep -E 'pattern1|pattern2' fichier
+
+# Recherche récursive
+grep -r 'Bad protocol' SSH.log
+
+# Inverser la recherche
+grep -v 'not' fichier
+
+# Première occurrence seulement
+grep -m 1 'model name' /proc/cpuinfo
+
+# Capture regex (sed)
+sed -nr "s/^.*epeated ([0-9]) times.*/\1/p" SSH.log</pre>
+    </div>
+
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> cut — Découper</h3>
+<pre class="bash-code"># Par délimiteur (espace par défaut, ici ':')
+cut -d ':' -f 2 fichier    # 2e champ
+
+# Par délimiteur espace
+cut -d ' ' -f 3- fichier   # du 3e champ à la fin
+
+# Par position de caractères
+cut -c 6-11 fichier         # caractères 6 à 11
+cut -c 1-6 fichier          # 6 premiers caractères
+
+# Combinaison fréquente (TP2)
+grep 'pattern' log | cut -d ':' -f 2</pre>
+    </div>
+
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> head, tail, sort, uniq</h3>
+<pre class="bash-code"># head — début du fichier
+head -n 1 fichier         # 1ère ligne
+sudo fdisk -l | head -n 1
+
+# tail — fin / sauter des lignes
+tail -n +2 fichier        # tout sauf la 1ère ligne
+                          # (utile pour CSV: sauter l'en-tête)
+
+# sort & uniq — trier et compter
+sort fichier              # trier
+sort -u fichier           # trier + unique
+uniq -c                   # compter les répétitions
+
+# Pipeline classique (TP2)
+grep 'pattern' log | cut -c 1-6 | sort | uniq -c</pre>
+    </div>
+
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> awk & autres</h3>
+<pre class="bash-code"># awk — découpe flexible (espaces multiples)
+awk '{print $2}' fichier       # 2e colonne
+awk -F 'from ' '{print $2}'   # délimiteur custom
+awk '{print $2/1024 " GiB"}'  # calculs
+
+# paste — joindre des lignes
+paste -sd + fichier   # concatène avec '+'
+
+# Manipulation de chaînes bash
+${var## }       # enlever espaces en début
+${var%% }       # enlever espaces en fin
+
+# command -v — vérifier si commande existe
+if ! command -v lolcat &amp;&gt; /dev/null ; then
+    echo "lolcat requis"
+    exit 1
+fi</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- 4. OBJETS POWERSHELL -->
+<!-- ============================================== -->
+<div class="section" id="objets">
+  <div class="section-title" style="background: var(--surface2);">
+    <span class="num" style="background:var(--ps-accent);color:#000;">4</span>
+    Manipulation d'objets — PowerShell
+  </div>
+
+  <div class="columns">
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> Accéder aux attributs</h3>
+<pre class="ps-code"># Notation point pour accéder aux propriétés
+$user.username
+$user.group
+$user.expires
+
+# Objets retournés par cmdlets
+$addr = Get-NetIPAddress -AddressFamily IPv4
+$addr.IPAddress
+$addr.PrefixLength
+
+$mac = (Get-NetAdapter -Name $iface).MacAddress
+
+# Interpolation dans les chaînes
+Write-Output "$($addr.IPAddress)/$($addr.PrefixLength)"
+# $() permet d'évaluer une expression dans ""
+
+# Lister les propriétés d'un objet
+Get-NetAdapter | Get-Member</pre>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> Filtrer & Pipeline</h3>
+<pre class="ps-code"># Pipeline — passer des objets
+Get-Process | Where-Object { $_.CPU -gt 10 }
+
+# Import-CSV retourne des objets
+$users = Import-CSV .\users.csv
+# Chaque ligne = objet avec propriétés
+# = noms de colonnes du CSV
+
+# Filtrer avec Where-Object
+$admins = $users | Where-Object {
+    $_.group -eq "admin"
+}
+
+# ForEach-Object dans le pipeline
+$users | ForEach-Object {
+    Write-Output $_.username
+}
+
+# Select-Object — choisir des colonnes
+Get-Process | Select-Object Name, CPU
+
+# Measure-Command — mesurer le temps
+$time = (Measure-Command {
+    ./timeme "$pass$try"
+}).TotalMilliseconds</pre>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> Cmdlets utiles (Get-CIMInstance)</h3>
+<pre class="ps-code"># Informations système (TP3: Info.ps1)
+# CPU
+(Get-CIMInstance Win32_Processor).Name
+(Get-CIMInstance Win32_Processor).NumberOfCores
+
+# RAM
+(Get-CIMInstance Win32_PhysicalMemory |
+    Measure-Object Capacity -Sum).Sum / 1GB
+
+# Disque
+(Get-CIMInstance Win32_DiskDrive).Size / 1GB
+
+# Hostname
+$env:COMPUTERNAME
+# ou: hostname
+
+# Réseau
+Get-NetIPAddress -AddressFamily IPv4
+Get-NetAdapter -Name "Ethernet"</pre>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> Variables d'environnement</h3>
+<pre class="ps-code"># Lire une variable d'environnement
+$env:LOG_LEVEL
+$env:COMPUTERNAME
+
+# Définir avant l'appel du script
+$env:LOG_LEVEL = "DEBUG"
+.\Fcats.ps1
+
+# Tester une variable d'environnement
+if ($env:LOG_LEVEL -eq "DEBUG") {
+    Write-Output "[DEBUG] message"
+}
+
+# Web requests (TP3/TP4)
+$response = Invoke-WebRequest -Uri $URL `
+    -UseBasicParsing
+$data = ConvertFrom-Json $response.Content
+$data.fact        # accéder à une propriété JSON</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- 5. UTILISATEURS & GROUPES -->
+<!-- ============================================== -->
+<div class="section" id="utilisateurs">
+  <div class="section-title" style="background: var(--surface2);">
+    <span class="num" style="background:var(--pink);color:#000;">5</span>
+    Gestion des utilisateurs & groupes
+  </div>
+
+  <div class="columns">
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> Utilisateurs & Groupes</h3>
+<pre class="bash-code"># Créer un groupe (TP2: create-users.sh)
+groupadd -f mongroupe    # -f = pas d'erreur si existe
+
+# Créer un utilisateur
+useradd -m username -g groupe
+#   -m = créer le répertoire HOME
+#   -g = groupe principal
+
+# Avec date d'expiration
+useradd -m username -g groupe -e 2030-06-09
+
+# Supprimer un utilisateur
+userdel -r username      # -r = supprimer le HOME
+
+# Supprimer un groupe
+groupdel -f mongroupe
+
+# Lecture CSV pour création (pattern complet)
+while IFS="," read -r username group expires ; do
+    groupadd -f $group
+    if [ $expires = "never" ] ; then
+        useradd -m $username -g $group
+    else
+        useradd -m $username -g $group -e $expires
+    fi
+done &lt; &lt;(tail -n +2 users.csv)</pre>
+      <div class="tip">tail -n +2 permet de sauter la ligne d'en-tête du CSV</div>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> Utilisateurs & Groupes</h3>
+<pre class="ps-code"># Créer un groupe local
+New-LocalGroup -Name "admin"
+
+# Créer un utilisateur local
+New-LocalUser -Name "TobiasForge" -NoPassword
+
+# Avec date d'expiration
+New-LocalUser -Name "MadGallica" `
+    -AccountExpires "2030-06-09" -NoPassword
+
+# Ajouter au groupe
+Add-LocalGroupMember -Group "admin" `
+    -Member "TobiasForge"
+
+# Supprimer
+Remove-LocalUser TobiasForge, PerEriksson
+Remove-LocalGroup admin, ghost
+
+# Pattern complet avec Import-CSV (TP4)
+$users = Import-CSV .\users.csv
+
+foreach ($user in $users) {
+    New-LocalGroup -Name $user.group
+    if ($user.expires -eq "never") {
+        New-LocalUser -Name $user.username `
+            -NoPassword
+    } else {
+        New-LocalUser -Name $user.username `
+            -AccountExpires $user.expires `
+            -NoPassword
+    }
+    Add-LocalGroupMember -Group $user.group `
+        -Member $user.username
+}</pre>
+    </div>
+  </div>
+
+  <div class="warn-box">
+    ⚠️ Pensez à tester que le fichier CSV existe avant de le lire !
+    Bash : <code>if [ ! -f users.csv ] ; then echo "requis"; exit 1; fi</code> —
+    PowerShell : <code>if (-not (Test-Path .\users.csv)) { exit 1 }</code>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- 6. SÉRIALISATION (JSON, CSV) -->
+<!-- ============================================== -->
+<div class="section" id="serialisation">
+  <div class="section-title" style="background: var(--surface2);">
+    <span class="num" style="background:var(--warn);color:#000;">6</span>
+    Formats de sérialisation — JSON & CSV
+  </div>
+
+  <div class="columns">
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> CSV avec read + IFS</h3>
+<pre class="bash-code"># Lire un CSV ligne par ligne
+while IFS="," read -r col1 col2 col3 ; do
+    echo "Col1=$col1 Col2=$col2 Col3=$col3"
+done &lt; &lt;(tail -n +2 fichier.csv)
+# tail -n +2 : saute l'en-tête
+
+# IFS = Internal Field Separator
+# IFS="," indique que les champs sont
+# séparés par des virgules</pre>
+    </div>
+
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> JSON avec jq</h3>
+<pre class="bash-code"># Afficher du JSON formaté
+cat data.json | jq .
+
+# Accéder à un champ
+echo $json | jq .ifname
+echo $json | jq .addr_info[0].local
+
+# Premier élément d'une liste
+echo $json | jq .[0]
+
+# Filtrer avec select
+echo $json | jq '.[] | select(.ifname == "eth0")'
+
+# -r : sortie brute (sans guillemets)
+echo $json | jq -r .address
+
+# Exemple réel (TP2: ip.sh)
+ip_data=$(ip -j a)
+ifname_data=$(echo $ip_data | \
+    jq ".[] | select(.ifname == \"$1\")")
+echo $ifname_data | jq -r .address</pre>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> CSV avec Import-CSV</h3>
+<pre class="ps-code"># Lire un CSV — retourne des objets
+$users = Import-CSV .\users.csv
+
+# Chaque ligne devient un objet avec
+# les en-têtes comme propriétés
+foreach ($user in $users) {
+    $user.username   # colonne "username"
+    $user.group      # colonne "group"
+    $user.expires    # colonne "expires"
+}
+
+# Exporter en CSV
+$data | Export-CSV .\sortie.csv -NoTypeInfo</pre>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> JSON</h3>
+<pre class="ps-code"># Parser du JSON depuis une API
+$response = Invoke-WebRequest -Uri $URL `
+    -UseBasicParsing
+$data = ConvertFrom-Json $response.Content
+$data.fact      # accéder à une propriété
+
+# Convertir un objet en JSON
+$obj | ConvertTo-Json
+
+# Convertir une chaîne JSON en objet
+$obj = '{"name":"test"}' | ConvertFrom-Json
+$obj.name   # "test"</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- 7. OUTILS INCONNUS -->
+<!-- ============================================== -->
+<div class="section" id="outils-inconnus">
+  <div class="section-title" style="background: var(--surface2);">
+    <span class="num" style="background:#a78bfa;color:#000;">7</span>
+    Utiliser des outils non encore connus
+  </div>
+
+  <div class="card both">
+    <h3>🔍 Méthodologie</h3>
+    <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:0.8rem;">
+      Le DS peut vous demander d'utiliser une commande ou un outil que vous n'avez jamais vu.
+      Voici l'approche à suivre :
+    </p>
+<pre class="bash-code"># 1. Lire l'aide de la commande
+commande --help
+commande -h
+man commande          # page de manuel complète
+
+# 2. Identifier les options utiles
+# Chercher les patterns : -o output, -f file, -v verbose...
+
+# 3. Tester avec un exemple simple
+# Toujours essayer un cas basique avant de scripter
+
+# 4. Adapter l'exemple à votre besoin
+# Combiner avec les outils que vous connaissez (pipe, grep...)</pre>
+
+<pre class="ps-code"># PowerShell — Découvrir une cmdlet
+Get-Help NomCmdlet            # aide
+Get-Help NomCmdlet -Examples  # exemples
+Get-Help NomCmdlet -Full      # aide complète
+
+# Lister les propriétés d'un objet retourné
+NomCmdlet | Get-Member
+
+# Chercher une cmdlet par mot-clé
+Get-Command *keyword*</pre>
+
+    <div class="tip">
+      Exemples vus en TP : <code>jq</code> (JSON en Bash), <code>Get-CIMInstance</code> (info système),
+      <code>Invoke-WebRequest</code> (API), <code>Measure-Command</code> (timing).
+      Le principe est toujours le même : lire la doc, adapter un exemple.
+    </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- RECAP PATTERNS -->
+<!-- ============================================== -->
+<div class="section">
+  <div class="section-title" style="background: var(--surface2);">
+    <span class="num" style="background:var(--text);color:var(--bg);">⚡</span>
+    Patterns récurrents des TP — à connaître par cœur
+  </div>
+
+  <div class="columns">
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> Vérifier un fichier + lire CSV</h3>
+<pre class="bash-code">#!/bin/bash
+FILE=users.csv
+
+if [ ! -f $FILE ] ; then
+    echo "$FILE required"
+    exit 1
+fi
+
+while IFS="," read -r user group exp ; do
+    echo "$user / $group / $exp"
+done &lt; &lt;(tail -n +2 $FILE)</pre>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> Lire CSV + agir</h3>
+<pre class="ps-code">$users = Import-CSV .\users.csv
+
+foreach ($u in $users) {
+    if ($u.expires -eq "never") {
+        # action sans expiration
+    } else {
+        # action avec expiration
+    }
+}</pre>
+    </div>
+
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> Analyse de logs</h3>
+<pre class="bash-code"># Compter un pattern
+grep -c 'pattern' fichier.log
+
+# Compter par jour (6 premiers chars = date)
+grep 'pattern' log | cut -c 1-6 | \
+    sort | uniq -c
+
+# Extraire un champ avec awk
+grep 'pattern' log | \
+    awk -F 'from ' '{print $2}' | \
+    awk -F ' port' '{print $1}' | \
+    sort | uniq -c</pre>
+    </div>
+
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> Info système</h3>
+<pre class="bash-code"># Hostname
+cat /etc/hostname
+# ou: $HOSTNAME
+
+# CPU
+grep -m 1 'model name' /proc/cpuinfo | \
+    cut -d ' ' -f 3-
+grep -c 'model name' /proc/cpuinfo
+
+# RAM
+grep MemTotal /proc/meminfo | \
+    awk '{print $2/1024/1024 " GiB"}'
+
+# Ou avec lscpu, free -h, lsblk...</pre>
+    </div>
+
+    <div class="card bash">
+      <h3><span class="tag bash-tag">Bash</span> Réseau avec ip + jq</h3>
+<pre class="bash-code">ip_data=$(ip -j a)
+iface=$(echo $ip_data | \
+    jq ".[] | select(.ifname == \"$1\")")
+
+echo $iface | jq -r .address          # MAC
+echo $iface | jq -r .addr_info[0].local  # IPv4</pre>
+    </div>
+
+    <div class="card ps">
+      <h3><span class="tag ps-tag">PowerShell</span> Réseau</h3>
+<pre class="ps-code">$addr4 = Get-NetIPAddress `
+    -AddressFamily IPv4 `
+    -InterfaceAlias "Ethernet"
+$mac = (Get-NetAdapter -Name "Ethernet") `
+    .MacAddress
+
+Write-Output "$($addr4.IPAddress)/$($addr4.PrefixLength)"</pre>
+    </div>
+  </div>
+</div>
+
+</div><!-- /grid -->
+
+<div class="footer">
+  Cheatsheet DS — Bash & PowerShell · Basée sur les TP1 à TP4 d'Arthur Baudet · Bonne chance ! 🍀
+</div>
+
+</body>
+</html>
