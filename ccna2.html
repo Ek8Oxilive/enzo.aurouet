@@ -116,6 +116,25 @@ body::before { content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 
 .opt.wrong .opt-marker { border-color: var(--wrong); background: var(--wrong); color: white; }
 .opt-marker.multi { border-radius: 4px; }
 
+.match-wrap { margin-bottom: 24px; }
+.match-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; align-items: stretch; }
+.match-left { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.5; color: var(--text); display: flex; align-items: center; }
+.match-slot { background: rgba(255,255,255,0.02); border: 1.5px dashed var(--border); border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.4; color: var(--text2); display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; transition: all 0.15s; min-height: 24px; }
+.match-slot:hover { border-color: rgba(14,246,204,0.35); }
+.match-slot.filled { border-style: solid; background: rgba(108,92,231,0.08); color: var(--text); }
+.match-slot.filled.correct { border-color: rgba(0,230,118,0.5); background: rgba(0,230,118,0.08); color: #69f0ae; }
+.match-slot.filled.wrong { border-color: rgba(255,82,82,0.5); background: rgba(255,82,82,0.08); color: #ff8a80; }
+.match-slot-placeholder { opacity: 0.6; font-size: 12px; }
+.match-remove { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 13px; padding: 0 2px; flex-shrink: 0; }
+.match-remove:hover { color: var(--wrong); }
+.match-mark { font-weight: 700; flex-shrink: 0; }
+.match-pool-label { font-size: 11px; color: var(--text2); margin-bottom: 10px; letter-spacing: 0.3px; }
+.match-pool { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; min-height: 20px; }
+.match-card { background: linear-gradient(135deg, rgba(108,92,231,0.14), rgba(14,246,204,0.08)); border: 1px solid rgba(108,92,231,0.35); border-radius: 10px; padding: 10px 14px; font-size: 12.5px; line-height: 1.45; color: var(--text); cursor: grab; transition: all 0.15s; max-width: 100%; }
+.match-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.match-card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(14,246,204,0.25); }
+.match-card:active { cursor: grabbing; }
+
 .expl-toggle { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); padding: 8px 16px; font-size: 12px; cursor: pointer; font-family: inherit; margin-bottom: 10px; }
 .expl-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 20px; }
 
@@ -168,6 +187,7 @@ const SITE_BADGE = "CCNA 2 • SRWE v7 • Live Quiz";
 let allQuestions = [];
 let quiz = [];
 let qIdx = 0, sel = [], answered = false, score = 0, answers = [];
+let matchQId = null, matchRightOrder = [], matchAssign = [], matchDragIdx = null;
 let screen = "loading";
 let currentCat = null;
 let timerInterval = null, timeLeft = 0, isTimed = false;
@@ -250,6 +270,37 @@ function isMarkedCorrect(li) {
   return false;
 }
 
+function extractTablePairs(table) {
+  const rows = Array.from(table.querySelectorAll("tr"));
+  const pairs = [];
+  rows.forEach(tr => {
+    const cells = Array.from(tr.querySelectorAll(":scope > td"));
+    if (cells.length >= 2) {
+      const left = cells[0].textContent.trim();
+      const right = cells[1].textContent.trim();
+      if (left && right) pairs.push({ left, right });
+    }
+  });
+  return pairs;
+}
+
+function findExplanation(afterEl) {
+  let explanation = "";
+  let explEl = afterEl ? afterEl.nextElementSibling : null;
+  let explAttempts = 0;
+  while (explEl && explAttempts < 5) {
+    const eTxt = explEl.textContent || "";
+    if (/expliqu|explanation/i.test(eTxt)) {
+      explanation = eTxt.replace(/^[_*]*\s*(Expliqu?e?|Explanation)\s*:?\s*/i, "").trim();
+      break;
+    }
+    if (/^\*?\*?_?\d+\./.test(eTxt.trim())) break;
+    explEl = explEl.nextElementSibling;
+    explAttempts++;
+  }
+  return explanation;
+}
+
 function parseQuestions(html) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
@@ -258,7 +309,7 @@ function parseQuestions(html) {
   const questions = [];
   const boldEls = content.querySelectorAll("strong, b");
   
-  let correctDetected = 0, correctFallback = 0;
+  let correctDetected = 0, correctFallback = 0, matchCount = 0;
   
   for (const bold of boldEls) {
     const text = bold.textContent.trim();
@@ -269,12 +320,20 @@ function parseQuestions(html) {
     const qText = qMatch[2].replace(/\s+/g, " ").trim();
     if (qText.length < 15) continue;
     
-    const isMulti = /choisissez (deux|trois|quatre|2|3|4)|citez.en (deux|trois|quatre)/i.test(text);
+    const isMulti = /choisissez (deux|trois|quatre|2|3|4)|citez.en (deux|trois|quatre)|choose (two|three|four|2|3|4)/i.test(text);
     
     let listEl = null;
     let optionEls = [];
+    let matchTableEl = null;
     let el = bold.closest("p, div, li") || bold.parentElement;
     let images = [];
+    
+    if (el.querySelectorAll) {
+      el.querySelectorAll("img").forEach(img => {
+        const src = img.getAttribute("src") || img.getAttribute("data-src") || "";
+        if (src && !src.startsWith("data:") && !src.includes("logo") && !src.includes("flag")) images.push(src);
+      });
+    }
     
     let sibling = el.nextElementSibling;
     let attempts = 0;
@@ -303,8 +362,36 @@ function parseQuestions(html) {
         optionEls = Array.from(listEl.querySelectorAll(":scope > li"));
         break;
       }
+      if (sibling.tagName === "TABLE") {
+        matchTableEl = sibling;
+        break;
+      }
+      if (sibling.querySelector && sibling.querySelector("table")) {
+        matchTableEl = sibling.querySelector("table");
+        break;
+      }
       sibling = sibling.nextElementSibling;
       attempts++;
+    }
+    
+    if (matchTableEl && optionEls.length < 2) {
+      const pairs = extractTablePairs(matchTableEl);
+      if (pairs.length < 2) continue;
+      
+      matchCount++;
+      questions.push({
+        id: questions.length + 1,
+        siteNum: siteNum,
+        text: qText,
+        type: "match",
+        pairs: pairs.slice(0, 8),
+        multi: false,
+        explanation: findExplanation(matchTableEl).substring(0, 500),
+        cat: categorize(qText),
+        images: images,
+        _colorOk: true
+      });
+      continue;
     }
     
     if (optionEls.length < 2) continue;
@@ -335,35 +422,22 @@ function parseQuestions(html) {
       colorOk = true;
     }
     
-    let explanation = "";
-    let explEl = listEl ? listEl.nextElementSibling : null;
-    let explAttempts = 0;
-    while (explEl && explAttempts < 5) {
-      const eTxt = explEl.textContent || "";
-      if (/expliqu|explanation/i.test(eTxt)) {
-        explanation = eTxt.replace(/^[_*]*\s*(Expliqu?e?|Explanation)\s*:?\s*/i, "").trim();
-        break;
-      }
-      if (/^\*?\*?_?\d+\./.test(eTxt.trim())) break;
-      explEl = explEl.nextElementSibling;
-      explAttempts++;
-    }
-    
     questions.push({
       id: questions.length + 1,
       siteNum: siteNum,
       text: qText,
+      type: "choice",
       options: options.slice(0, 6),
       correct: correct,
       multi: isMulti || correct.length > 1,
-      explanation: explanation.substring(0, 500),
+      explanation: findExplanation(listEl).substring(0, 500),
       cat: categorize(qText),
       images: images,
       _colorOk: colorOk
     });
   }
   
-  console.log(`[Parser] ${questions.length} questions parsed. Correct detected by color: ${correctDetected}, fallback: ${correctFallback}`);
+  console.log(`[Parser] ${questions.length} questions parsed (${matchCount} matching). Correct detected by color: ${correctDetected}, fallback: ${correctFallback}`);
   return questions;
 }
 
@@ -435,7 +509,7 @@ function parseSimpleText(text) {
     
     if (options.length < 2) continue;
     
-    const isMulti = /choisissez|citez/i.test(qText);
+    const isMulti = /choisissez|citez|choose/i.test(qText);
     
     let explanation = "";
     const explMatch = block.match(/(?:_?Expliqu?e?|Explanation)\s*:?\s*\*?\*?\s*(.+?)(?=\*\*\d+\.|\n\n|$)/is);
@@ -445,6 +519,7 @@ function parseSimpleText(text) {
       id: questions.length + 1,
       siteNum: siteNum,
       text: qText.trim(),
+      type: "choice",
       options: options.slice(0, 6),
       correct: [0],
       multi: isMulti,
@@ -472,6 +547,7 @@ function startQuiz(cat, timed, limit) {
   if (limit) quiz = quiz.slice(0, limit);
   qIdx = 0; sel = []; answered = false; score = 0; answers = [];
   showExpl = false; reviewAll = false; currentCat = cat;
+  matchQId = null; matchRightOrder = []; matchAssign = []; matchDragIdx = null;
   
   if (timed) {
     isTimed = true;
@@ -521,6 +597,77 @@ function submitAnswer() {
   const ok = q.correct.length === sel.length && q.correct.every(c => sel.includes(c));
   if (ok) score++;
   answers.push({ qId: q.id, sel, ok });
+  answered = true;
+  showExpl = false;
+  render();
+}
+
+// ─── MATCHING (DRAG & DROP) ─────────────────────
+function initMatchIfNeeded(q) {
+  if (matchQId === q.id) return;
+  matchQId = q.id;
+  matchRightOrder = shuffle(q.pairs.map((_, i) => i));
+  matchAssign = new Array(q.pairs.length).fill(null);
+  matchDragIdx = null;
+}
+
+function matchSelectRight(origIdx) {
+  if (answered) return;
+  matchDragIdx = (matchDragIdx === origIdx) ? null : origIdx;
+  render();
+}
+
+function matchPlaceOnSlot(leftIdx) {
+  if (answered) return;
+  if (matchDragIdx === null) {
+    if (matchAssign[leftIdx] !== null) {
+      matchAssign[leftIdx] = null;
+      render();
+    }
+    return;
+  }
+  const prevSlot = matchAssign.indexOf(matchDragIdx);
+  if (prevSlot !== -1) matchAssign[prevSlot] = null;
+  matchAssign[leftIdx] = matchDragIdx;
+  matchDragIdx = null;
+  render();
+}
+
+function matchRemoveFromSlot(leftIdx, ev) {
+  if (ev) ev.stopPropagation();
+  if (answered) return;
+  matchAssign[leftIdx] = null;
+  render();
+}
+
+function matchDragStart(ev, origIdx) {
+  if (answered) { ev.preventDefault(); return; }
+  ev.dataTransfer.setData("text/plain", String(origIdx));
+  ev.dataTransfer.effectAllowed = "move";
+}
+
+function matchAllowDrop(ev) {
+  ev.preventDefault();
+}
+
+function matchDropOnSlot(ev, leftIdx) {
+  ev.preventDefault();
+  if (answered) return;
+  const origIdx = parseInt(ev.dataTransfer.getData("text/plain"), 10);
+  if (isNaN(origIdx)) return;
+  const prevSlot = matchAssign.indexOf(origIdx);
+  if (prevSlot !== -1) matchAssign[prevSlot] = null;
+  matchAssign[leftIdx] = origIdx;
+  matchDragIdx = null;
+  render();
+}
+
+function submitMatch() {
+  const q = quiz[qIdx];
+  if (matchAssign.some(v => v === null)) return;
+  const ok = matchAssign.every((origIdx, leftIdx) => origIdx === leftIdx);
+  if (ok) score++;
+  answers.push({ qId: q.id, matchAssign: [...matchAssign], ok });
   answered = true;
   showExpl = false;
   render();
@@ -627,29 +774,74 @@ function renderHome(app) {
   `;
 }
 
+function renderMatchUI(q) {
+  initMatchIfNeeded(q);
+  
+  const leftHTML = q.pairs.map((p, leftIdx) => {
+    const placedOrig = matchAssign[leftIdx];
+    let slotCls = "match-slot";
+    let slotContent = '<span class="match-slot-placeholder">Déposez ici</span>';
+    if (placedOrig !== null) {
+      slotCls += " filled";
+      if (answered) {
+        const isCorrect = placedOrig === leftIdx;
+        slotCls += isCorrect ? " correct" : " wrong";
+        slotContent = `<span>${escHTML(q.pairs[placedOrig].right)}</span><span class="match-mark">${isCorrect ? "✓" : "✗"}</span>`;
+      } else {
+        slotContent = `<span>${escHTML(q.pairs[placedOrig].right)}</span><button class="match-remove" onclick="matchRemoveFromSlot(${leftIdx}, event)">✕</button>`;
+      }
+    }
+    return `<div class="match-row">
+      <div class="match-left">${escHTML(p.left)}</div>
+      <div class="${slotCls}" ondragover="matchAllowDrop(event)" ondrop="matchDropOnSlot(event,${leftIdx})" onclick="matchPlaceOnSlot(${leftIdx})">${slotContent}</div>
+    </div>`;
+  }).join("");
+  
+  const remaining = matchRightOrder.filter(origIdx => matchAssign.indexOf(origIdx) === -1);
+  const poolHTML = remaining.map(origIdx => {
+    const selected = matchDragIdx === origIdx ? " selected" : "";
+    return `<div class="match-card${selected}" draggable="true" ondragstart="matchDragStart(event,${origIdx})" onclick="matchSelectRight(${origIdx})">${escHTML(q.pairs[origIdx].right)}</div>`;
+  }).join("");
+  
+  return `
+    <div class="match-wrap">
+      <div>${leftHTML}</div>
+      <div class="match-pool-label">${answered ? "" : (matchDragIdx !== null ? "🔗 Sélectionné — touchez une case à gauche pour la placer" : "🔗 Glissez une carte vers sa case, ou touchez-la puis touchez la case")}</div>
+      <div class="match-pool">${poolHTML || (answered ? "" : '<span style="color:var(--text2);font-size:12px">Toutes les cartes sont placées</span>')}</div>
+    </div>
+  `;
+}
+
 function renderQuiz(app) {
   const q = quiz[qIdx];
   const ct = CATS[q.cat] || CATS.other;
   const prog = ((qIdx + (answered ? 1 : 0)) / quiz.length * 100).toFixed(1);
+  const isMatch = q.type === "match";
   
-  let optsHTML = "";
-  q.options.forEach((opt, i) => {
-    const isSel = sel.includes(i);
-    const isOk = q.correct.includes(i);
-    let cls = "opt";
-    if (answered) {
-      if (isOk) cls += " correct done";
-      else if (isSel) cls += " wrong done";
-      else cls += " done";
-    } else if (isSel) cls += " selected";
-    
-    const markerCls = "opt-marker" + (q.multi ? " multi" : "");
-    let markerContent = String.fromCharCode(65 + i);
-    if (answered && isOk) markerContent = "✓";
-    else if (answered && isSel && !isOk) markerContent = "✗";
-    
-    optsHTML += `<button class="${cls}" onclick="toggleOpt(${i})"><span class="${markerCls}">${markerContent}</span><span>${escHTML(opt)}</span></button>`;
-  });
+  let bodyHTML;
+  if (isMatch) {
+    bodyHTML = renderMatchUI(q);
+  } else {
+    let optsHTML = "";
+    q.options.forEach((opt, i) => {
+      const isSel = sel.includes(i);
+      const isOk = q.correct.includes(i);
+      let cls = "opt";
+      if (answered) {
+        if (isOk) cls += " correct done";
+        else if (isSel) cls += " wrong done";
+        else cls += " done";
+      } else if (isSel) cls += " selected";
+      
+      const markerCls = "opt-marker" + (q.multi ? " multi" : "");
+      let markerContent = String.fromCharCode(65 + i);
+      if (answered && isOk) markerContent = "✓";
+      else if (answered && isSel && !isOk) markerContent = "✗";
+      
+      optsHTML += `<button class="${cls}" onclick="toggleOpt(${i})"><span class="${markerCls}">${markerContent}</span><span>${escHTML(opt)}</span></button>`;
+    });
+    bodyHTML = `<div class="opts">${optsHTML}</div>`;
+  }
   
   let explHTML = "";
   if (answered && q.explanation) {
@@ -657,9 +849,10 @@ function renderQuiz(app) {
     if (showExpl) explHTML += `<div class="expl-box">${escHTML(q.explanation)}</div>`;
   }
   
+  const matchReady = isMatch ? matchAssign.length > 0 && matchAssign.every(v => v !== null) : sel.length > 0;
   const btnHTML = answered
     ? `<button class="btn btn-secondary btn-block" onclick="nextQuestion()">${qIdx+1>=quiz.length?"Voir les résultats →":"Question suivante →"}</button>`
-    : `<button class="btn ${sel.length?"btn-primary":"btn-ghost"} btn-block" onclick="submitAnswer()" ${sel.length?"":"disabled"}>Valider</button>`;
+    : `<button class="btn ${matchReady?"btn-primary":"btn-ghost"} btn-block" onclick="${isMatch?"submitMatch()":"submitAnswer()"}" ${matchReady?"":"disabled"}>Valider</button>`;
   
   app.innerHTML = `
     <div class="quiz-bar">
@@ -681,9 +874,9 @@ function renderQuiz(app) {
     <div class="fade-up">
       <div class="q-text">${escHTML(q.text)}</div>
       ${q.images && q.images.length > 0 ? `<div class="q-images">${q.images.map(src => `<img src="${escHTML(src)}" alt="Illustration question" loading="lazy" />`).join("")}</div>` : ""}
-      ${q.multi ? '<div class="q-multi">⚡ Plusieurs réponses attendues</div>' : ""}
+      ${q.multi ? '<div class="q-multi">⚡ Plusieurs réponses attendues</div>' : (isMatch ? '<div class="q-multi">🔗 Associez chaque élément à sa description</div>' : "")}
     </div>
-    <div class="opts">${optsHTML}</div>
+    ${bodyHTML}
     ${explHTML}
     ${btnHTML}
   `;
@@ -719,7 +912,9 @@ function renderResults(app) {
     const qq = allQuestions.find(x => x.id === a.qId);
     if (!qq) return;
     const cc = CATS[qq.cat] || CATS.other;
-    const correctOpts = qq.correct.map(c => `<p style="padding-left:12px">• ${escHTML(qq.options[c])}</p>`).join("");
+    const correctOpts = qq.type === "match"
+      ? qq.pairs.map(p => `<p style="padding-left:12px">• ${escHTML(p.left)} → ${escHTML(p.right)}</p>`).join("")
+      : qq.correct.map(c => `<p style="padding-left:12px">• ${escHTML(qq.options[c])}</p>`).join("");
     reviewHTML += `<details class="review-item">
       <summary class="review-summary"><span style="color:${cc.color};margin-right:8px">${cc.icon}</span><span class="q-sitenum" style="margin-right:6px">Site Q.${qq.siteNum || qq.id}</span> ${escHTML(qq.text.substring(0, 90))}...</summary>
       <div class="review-body">
